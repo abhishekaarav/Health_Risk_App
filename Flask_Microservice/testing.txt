@@ -1,0 +1,36 @@
+curl -X POST http://localhost:5000/predict/diabetes \
+  -H "Content-Type: application/json" \
+  -d '{
+    "Pregnancies": 6,
+    "Glucose": 148,
+    "BloodPressure": 72,
+    "SkinThickness": 35,
+    "Insulin": 0,
+    "BMI": 33.6,
+    "DiabetesPedigreeFunction": 0.627,
+    "Age": 50
+  }'
+
+
+curl -X POST http://localhost:5000/predict/heart \
+  -H "Content-Type: application/json" \
+  -d '{
+    "Age": 22,
+    "Sex": "Male",
+    "Cholesterol": 150,
+    "Heart Rate": 72,
+    "Diabetes": 0,
+    "Family History": 1,
+    "Smoking": 0,
+    "Obesity": 0,
+    "Alcohol Consumption": 0,
+    "Exercise Hours Per Week": 0,
+    "Diet": "Average",
+    "Previous Heart Problems": 0,
+    "Medication Use": 1,
+    "Stress Level": 9.5,
+    "BMI": 26.5,
+    "Sleep Hours Per Day": 8,
+    "Systolic_BP": 130,
+    "Diastolic_BP": 80
+  }'
