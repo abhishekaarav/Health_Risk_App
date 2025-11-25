@@ -1,0 +1,95 @@
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+
+export default function SignIn() {
+  const [formData, setFormData] = useState({});
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(null);
+
+    try {
+      setLoading(true);
+
+      const res = await axios.post(
+        "/api/auth/signin",
+        formData,
+        { withCredentials: true } 
+      );
+      const data = res.data;
+
+      console.log("Signin:", data);
+      if (data.success === false) {
+        setLoading(false);
+        setError(data.message);
+        return;
+      }
+
+      setLoading(false);
+
+      navigate("/"); 
+    } catch (err) {
+      setLoading(false);
+
+      const backendMessage =
+        err.response?.data?.message || "Something went wrong";
+
+      setError(backendMessage);
+    }
+  };
+
+  return (
+    <div className="p-3 max-w-lg mx-auto">
+      <h1 className="text-3xl text-center font-semibold my-7">Sign In</h1>
+
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <input
+          type="email"
+          placeholder="email"
+          className="border p-3 rounded-lg"
+          id="email"
+          onChange={handleChange}
+        />
+
+        <input
+          type="password"
+          placeholder="password"
+          className="border p-3 rounded-lg"
+          id="password"
+          onChange={handleChange}
+        />
+
+        <button
+          disabled={loading}
+          className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
+        >
+          {loading ? "Loading..." : "Sign In"}
+        </button>
+      </form>
+
+      <div className="flex gap-2 mt-5">
+        <p>Don't have an account?</p>
+        <Link to={"/sign-up"}>
+          <span className="text-blue-700">Sign up</span>
+        </Link>
+      </div>
+      
+      {error && (
+        <div className="mt-5 p-3 rounded-lg bg-red-100 border border-red-300 text-red-700 text-sm">
+          ⚠️ <span className="font-medium">Error:</span> {error}
+        </div>
+      )}
+    </div>
+  );
+}

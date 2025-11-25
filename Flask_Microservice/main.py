@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from flask import Flask, jsonify, request
 
-BASE_DIR = Path(__file__).resolve().parents[1]
+BASE_DIR = Path(__file__).resolve().parent
 MODEL_DIR = BASE_DIR / "models"
 
 diabetes_model_path = MODEL_DIR / "diabetes_model.pkl"
