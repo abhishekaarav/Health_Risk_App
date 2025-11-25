@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 export default function DiabetesPrediction() {
   const initialState = {
@@ -13,6 +14,7 @@ export default function DiabetesPrediction() {
   };
 
   const [form, setForm] = useState(initialState);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,10 +24,30 @@ export default function DiabetesPrediction() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitted:", form);
-    alert("Diabetes Prediction Submitted!");
+    setLoading(true);
+
+    try {
+      // SEND TO NODE BACKEND → NODE → FLASK
+      const response = await axios.post(
+        "http://localhost:5000/api/disease/diabetes-predict",
+        form,
+        { withCredentials: true }
+      );
+
+      console.log("🔥 FULL PREDICTION RESPONSE:");
+      console.log(response.data);
+
+      alert(
+        `Prediction: ${response.data.prediction}\nConfidence: ${response.data.confidence}`
+      );
+    } catch (error) {
+      console.error("❌ Prediction Error:", error);
+      alert("Prediction failed! Check backend/flask server.");
+    }
+
+    setLoading(false);
   };
 
   return (
@@ -39,7 +61,6 @@ export default function DiabetesPrediction() {
           onSubmit={handleSubmit}
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
-          {/* Auto Generate Inputs */}
           {[
             { label: "Pregnancies", unit: "(count)", name: "Pregnancies" },
             { label: "Glucose Level", unit: "(mg/dL)", name: "Glucose" },
@@ -75,13 +96,13 @@ export default function DiabetesPrediction() {
             </div>
           ))}
 
-          {/* SUBMIT BUTTON */}
           <div className="md:col-span-2 mt-8">
             <button
               type="submit"
+              disabled={loading}
               className="w-full py-3 bg-green-600 text-white font-semibold rounded-xl shadow hover:bg-green-700 transition"
             >
-              Predict Diabetes Risk
+              {loading ? "Predicting..." : "Predict Diabetes Risk"}
             </button>
           </div>
         </form>
