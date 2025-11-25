@@ -1,4 +1,4 @@
-curl -X POST http://localhost:5000/predict/diabetes \
+curl -X POST http://127.0.0.1:5000/predict/diabetes \
   -H "Content-Type: application/json" \
   -d '{
     "Pregnancies": 6,
@@ -12,7 +12,7 @@ curl -X POST http://localhost:5000/predict/diabetes \
   }'
 
 
-curl -X POST http://localhost:5000/predict/heart \
+curl -X POST http://127.0.0.1:5000/predict/heart \
   -H "Content-Type: application/json" \
   -d '{
     "Age": 22,
