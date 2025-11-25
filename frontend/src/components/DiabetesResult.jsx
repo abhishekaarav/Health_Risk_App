@@ -1,307 +1,233 @@
-// DiabetesResult.jsx
-import React, { useEffect, useRef, useState } from "react";
-import html2canvas from "html2canvas";
+import React from "react";
+import { motion } from "framer-motion";
+import CircleProgress from "./CircleProgress";
+import { CheckCircle, AlertTriangle } from "lucide-react";
+
 import jsPDF from "jspdf";
 
-/**
- * Props:
- * - result: { label: string, risk_probability: number (0..1), suggestions: string[] }
- * - onBack: () => void
- * - onSave?: (result) => void  // optional callback when user clicks "Save to profile"
- */
-export default function DiabetesResult({ result, onBack, onSave }) {
-  const percent = Math.round((result?.risk_probability ?? 0) * 100);
-  const [animatedPct, setAnimatedPct] = useState(0);
-  const [copied, setCopied] = useState(false);
-  const [expanded, setExpanded] = useState(true);
-  const [saved, setSaved] = useState(false);
-  const [pdfLoading, setPdfLoading] = useState(false);
-  const rafRef = useRef(null);
-  const cardRef = useRef(null); // <-- ref used for html2canvas
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+} from "recharts";
 
-  // Determine color and friendly message
-  const severity = (() => {
-    if (percent >= 66) return { key: "High", color: "#dc2626", note: "Seek medical advice promptly." };
-    if (percent >= 34) return { key: "Medium", color: "#d97706", note: "Monitor and follow lifestyle changes." };
-    return { key: "Low", color: "#16a34a", note: "Maintain healthy habits." };
-  })();
+export default function DiabetesResult({ result, onBack }) {
+  if (!result) return null;
 
-  // animate percentage (requestAnimationFrame)
-  useEffect(() => {
-    let start = null;
-    const duration = 800; // ms
-    const from = 0;
-    const to = percent;
+  const percent = Math.round(result.confidence * 100);
+  const isHigh = percent >= 70;
+  const data = result.userMetrics.metrics;
 
-    function step(timestamp) {
-      if (!start) start = timestamp;
-      const progress = Math.min((timestamp - start) / duration, 1);
-      const value = Math.round(from + (to - from) * easeOutCubic(progress));
-      setAnimatedPct(value);
-      if (progress < 1) {
-        rafRef.current = requestAnimationFrame(step);
-      }
-    }
-    rafRef.current = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [percent]);
+  // Individual Graph Data
+  const glucoseData = [{ name: "Glucose", value: data.Glucose }];
+  const bmiData = [{ name: "BMI", value: data.BMI }];
+  const insulinData = [{ name: "Insulin", value: data.Insulin }];
 
-  function easeOutCubic(t) {
-    return 1 - Math.pow(1 - t, 3);
-  }
+  // ⭐ PREMIUM PDF DOWNLOAD — CLEAN FORMATTED VERSION
+  const downloadPremiumPDF = () => {
+    const pdf = new jsPDF("p", "mm", "a4");
+    const pageWidth = pdf.internal.pageSize.getWidth();
 
-  const handleCopy = async () => {
-    const text = result.suggestions.join("\n• ");
-    try {
-      await navigator.clipboard.writeText(`Diabetes Risk: ${result.label} (${percent}%)\n\nSuggestions:\n• ${text}`);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error("Copy failed", err);
-      setCopied(false);
-    }
+    // HEADER BAR
+    pdf.setFillColor(50, 70, 170);
+    pdf.rect(0, 0, pageWidth, 28, "F");
+
+    // TITLE
+    pdf.setTextColor("#ffffff");
+    pdf.setFontSize(22);
+    pdf.setFont("helvetica", "bold");
+    pdf.text("DIABETES HEALTH REPORT", pageWidth / 2, 18, { align: "center" });
+
+    // RESET COLOR
+    pdf.setTextColor("#000000");
+    pdf.setFont("helvetica", "normal");
+
+    let y = 45;
+
+    // DATE
+    pdf.setFontSize(12);
+    pdf.text(`Date: ${new Date().toLocaleDateString()}`, 10, y);
+
+    // Prediction & Confidence
+    y += 15;
+    pdf.setFontSize(14);
+    pdf.setFont("helvetica", "bold");
+    pdf.text("Prediction:", 10, y);
+    pdf.setFont("helvetica", "normal");
+    pdf.text(`${result.prediction}`, 45, y);
+
+    y += 10;
+    pdf.setFont("helvetica", "bold");
+    pdf.text("Probability:", 10, y);
+    pdf.setFont("helvetica", "normal");
+    pdf.text(`${percent}%`, 45, y);
+
+    // Metrics Section
+    y += 20;
+    pdf.setFontSize(16);
+    pdf.setFont("helvetica", "bold");
+    pdf.text("Patient Health Metrics:", 10, y);
+
+    const metrics = [
+      `• Glucose: ${data.Glucose}`,
+      `• BMI: ${data.BMI}`,
+      `• Insulin: ${data.Insulin}`,
+      `• Age: ${data.Age}`,
+      `• Pregnancies: ${data.Pregnancies}`,
+      `• Blood Pressure: ${data.BloodPressure}`,
+    ];
+
+    y += 10;
+    pdf.setFontSize(13);
+    pdf.setFont("helvetica", "normal");
+    metrics.forEach((m) => {
+      pdf.text(m, 15, y);
+      y += 8;
+    });
+
+    // Recommendations
+    y += 10;
+    pdf.setFontSize(16);
+    pdf.setFont("helvetica", "bold");
+    pdf.text("Suggestions:", 10, y);
+
+    y += 10;
+    pdf.setFontSize(13);
+    pdf.setFont("helvetica", "normal");
+
+    result.suggestions.forEach((s) => {
+      pdf.text(`• ${s}`, 15, y);
+      y += 8;
+    });
+
+    // FOOTER
+    pdf.setFontSize(10);
+    pdf.setTextColor("#666666");
+    pdf.text(
+      "Generated by Health Risk Prediction System © 2025",
+      pageWidth / 2,
+      290,
+      { align: "center" }
+    );
+
+    pdf.save("diabetes-health-report.pdf");
   };
-
-  const handleShare = async () => {
-    const shareText = `Diabetes Risk: ${result.label} (${percent}%)\nSuggestions: ${result.suggestions.join(" | ")}`;
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: "Diabetes Risk Prediction",
-          text: shareText,
-        });
-      } catch (err) {
-        console.error("Share cancelled or failed", err);
-      }
-    } else {
-      try {
-        await navigator.clipboard.writeText(shareText);
-        alert("Share text copied to clipboard (Web Share not supported).");
-      } catch {
-        alert("Neither sharing nor clipboard available in this browser.");
-      }
-    }
-  };
-
-  const handleSave = () => {
-    try {
-      const stored = JSON.parse(localStorage.getItem("diabetes_results") || "[]");
-      const payload = {
-        id: Date.now(),
-        result,
-        percent,
-        savedAt: new Date().toISOString(),
-      };
-      stored.unshift(payload);
-      localStorage.setItem("diabetes_results", JSON.stringify(stored.slice(0, 20)));
-      setSaved(true);
-      if (onSave) onSave(payload);
-      setTimeout(() => setSaved(false), 2000);
-    } catch (err) {
-      console.error("Save failed", err);
-    }
-  };
-
-  const handleDownloadJSON = () => {
-    const data = {
-      result,
-      percent,
-      savedAt: new Date().toISOString(),
-    };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `diabetes_result_${Date.now()}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  // ------------------ PDF generation using html2canvas + jsPDF ------------------
-  const handleDownloadPDF = async () => {
-    if (!cardRef.current) return;
-    setPdfLoading(true);
-    try {
-      // Use html2canvas to render node to canvas
-      const canvas = await html2canvas(cardRef.current, {
-        scale: 2, // higher scale for better quality
-        useCORS: true,
-        logging: false,
-        scrollY: -window.scrollY, // ensure correct capture when scrolled
-      });
-
-      const imgData = canvas.toDataURL("image/png");
-
-      // Create jsPDF and add the image; handle multi-page content
-      const pdf = new jsPDF("p", "mm", "a4");
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-
-      // dimensions of the image in PDF units
-      const imgProps = pdf.getImageProperties(imgData);
-      const imgWidth = pdfWidth;
-      const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
-
-      let heightLeft = imgHeight;
-      let position = 0;
-
-      // Add the first page
-      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-      heightLeft -= pdfHeight;
-
-      // Additional pages if necessary
-      while (heightLeft > 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-        heightLeft -= pdfHeight;
-      }
-
-      pdf.save(`diabetes_result_${Date.now()}.pdf`);
-    } catch (err) {
-      console.error("PDF generation failed:", err);
-      alert("PDF generation error.");
-    } finally {
-      setPdfLoading(false);
-    }
-  };
-  // ------------------------------------------------------------------------------
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-start justify-center py-12 px-4">
-      {/* The ref is attached to the area we want to export as PDF */}
-      <div ref={cardRef} className="w-full max-w-3xl bg-white rounded-2xl shadow-2xl p-6 md:p-10">
-        <div className="flex items-start gap-6 md:gap-10">
-          {/* Left: Gauge */}
-          <div className="flex-shrink-0">
-            <div role="img" aria-label={`Risk gauge showing ${percent} percent`} className="relative" style={{ width: 180, height: 180 }}>
-              <svg width={180} height={180} viewBox={`0 0 180 180`} className="block">
-                <circle cx={90} cy={90} r={72} stroke="#e6e6e6" strokeWidth={14} fill="none" />
-                <circle
-                  cx={90}
-                  cy={90}
-                  r={72}
-                  stroke={severity.color}
-                  strokeWidth={14}
-                  strokeLinecap="round"
-                  fill="none"
-                  strokeDasharray={2 * Math.PI * 72}
-                  strokeDashoffset={(2 * Math.PI * 72) - ((animatedPct / 100) * (2 * Math.PI * 72))}
-                  transform={`rotate(-90 90 90)`}
-                />
-              </svg>
+    <motion.div
+      id="result-section"
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className="bg-white shadow-2xl rounded-2xl p-8 mx-auto max-w-6xl mt-20"
+    >
+      {/* Prediction Icon */}
+      <div className="text-center">
+        {isHigh ? (
+          <AlertTriangle size={70} className="text-red-500 mx-auto" />
+        ) : (
+          <CheckCircle size={70} className="text-green-500 mx-auto" />
+        )}
+      </div>
 
-              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                <div className="text-sm text-gray-500">Risk</div>
-                <div className="text-2xl md:text-3xl font-semibold" style={{ color: severity.color }}>
-                  {animatedPct}%
-                </div>
-                <div className="text-xs text-gray-400 mt-1">({result.label})</div>
-              </div>
-            </div>
-          </div>
+      <h2
+        className={`text-4xl font-bold text-center mt-4 ${
+          isHigh ? "text-red-600" : "text-green-600"
+        }`}
+      >
+        {result.prediction}
+      </h2>
 
-          {/* Right: Details */}
-          <div className="flex-1">
-            <h2 className="text-2xl font-bold text-gray-800">Diabetes Prediction Result</h2>
+      {/* Probability Circle */}
+      <div className="flex justify-center mt-6">
+        <CircleProgress percent={percent} />
+      </div>
 
-            <p className="mt-2 text-sm text-gray-600">
-              Severity:{" "}
-              <span className="font-semibold" style={{ color: severity.color }}>
-                {result.label}
-              </span>
-              {" — "}{severity.note}
-            </p>
+      <p className="text-center mt-4 text-gray-700 text-lg">
+        {isHigh
+          ? "High risk detected ⚠️. Medical attention recommended."
+          : percent >= 40
+          ? "Moderate risk. Maintain healthy habits 🟡"
+          : "Low risk detected ✔️ Stay consistent!"}
+      </p>
 
-            <div className="mt-4 grid grid-cols-2 gap-2 md:grid-cols-3">
-              <StatBox label="Probability" value={`${percent}%`} />
-              <StatBox label="Label" value={result.label} color={severity.color} />
-              <StatBox label="Saved" value={saved ? "✓ Saved" : "Not saved"} />
-            </div>
+      {/* GRAPH CARDS */}
+      <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <GraphCard title="Glucose Level" data={glucoseData} color="#38bdf8" />
+        <GraphCard title="BMI" data={bmiData} color="#34d399" />
+        <GraphCard title="Insulin Level" data={insulinData} color="#fbbf24" />
+      </div>
 
-            {/* Suggestions */}
-            <div className="mt-6">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-800">Suggestions</h3>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setExpanded((v) => !v)}
-                    className="px-3 py-1 text-sm rounded-md bg-gray-100 hover:bg-gray-200"
-                    aria-expanded={expanded}
-                  >
-                    {expanded ? "Collapse" : "Expand"}
-                  </button>
-                  <button
-                    onClick={handleCopy}
-                    className="px-3 py-1 text-sm rounded-md bg-indigo-600 text-white hover:bg-indigo-700"
-                  >
-                    {copied ? "Copied" : "Copy"}
-                  </button>
-                </div>
-              </div>
+      {/* Suggestions */}
+      <div className="mt-10">
+        <h3 className="text-3xl font-bold text-gray-900 mb-4">
+          📝 Suggestions:
+        </h3>
 
-              <div className={`mt-3 text-gray-700 transition-all duration-200 ${expanded ? "max-h-96" : "max-h-0 overflow-hidden"}`}>
-                <ul className="list-inside list-decimal space-y-2">
-                  {result.suggestions.map((s, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <span className="flex-shrink-0 mt-0.5">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
-                          <circle cx="12" cy="12" r="10" stroke={severity.color} strokeWidth="2" />
-                          <path d="M7 12l3 3 7-7" stroke={severity.color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      </span>
-                      <p className="text-sm">{s}</p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+        <div className="space-y-4">
+          {result.suggestions.map((s, i) => {
+            let emoji = "💡";
+            if (/doctor|medical|consult/i.test(s)) emoji = "🚨";
+            else if (/avoid|reduce|control/i.test(s)) emoji = "⚠️";
+            else if (/exercise|diet|walk/i.test(s)) emoji = "💪";
 
-            {/* Actions */}
-            <div className="mt-6 flex flex-wrap gap-3">
-              <button onClick={handleShare} className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">
-                Share
-              </button>
-
-              <button onClick={handleDownloadJSON} className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300">
-                Download JSON
-              </button>
-
-              <button onClick={handleSave} className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700">
-                {saved ? "Saved ✓" : "Save to profile"}
-              </button>
-
-              <button
-                onClick={handleDownloadPDF}
-                disabled={pdfLoading}
-                className={`px-4 py-2 rounded-lg ${pdfLoading ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-600 hover:bg-indigo-700"} text-white`}
+            return (
+              <div
+                key={i}
+                className="p-4 bg-gray-50 border-l-8 rounded-lg shadow-sm flex gap-3 border-indigo-400"
               >
-                {pdfLoading ? "Preparing PDF..." : "Download as PDF"}
-              </button>
-
-              <button onClick={onBack} className="px-4 py-2 rounded-lg bg-white border border-gray-200 hover:bg-gray-50">
-                Back to form
-              </button>
-            </div>
-
-            <p className="mt-4 text-xs text-gray-400">
-              Note: This is a predictive output and not a diagnosis. Follow-up with a healthcare professional.
-            </p>
-          </div>
+                <span className="text-3xl">{emoji}</span>
+                <p className="text-gray-700 text-lg">{s}</p>
+              </div>
+            );
+          })}
         </div>
       </div>
-    </div>
+
+      {/* BUTTONS SIDE-BY-SIDE */}
+      <div className="mt-12 flex justify-center gap-6">
+        {/* Download Report Button */}
+        <button
+          onClick={downloadPremiumPDF}
+          className="px-8 py-3 rounded-xl text-lg font-semibold text-white 
+               bg-gradient-to-r from-red-500 to-red-600 
+               shadow-lg hover:scale-105 transition-all duration-300"
+        >
+          📄 Download Report
+        </button>
+
+        {/* Back Button */}
+        <button
+          onClick={onBack}
+          className="px-8 py-3 rounded-xl text-lg font-semibold text-white 
+               bg-gradient-to-r from-indigo-500 to-indigo-600
+               shadow-lg hover:scale-105 transition-all duration-300"
+        >
+          ← Back to Prediction
+        </button>
+      </div>
+    </motion.div>
   );
 }
 
-/** Small stat box subcomponent */
-function StatBox({ label, value, color }) {
+/* REUSABLE GRAPH CARD COMPONENT */
+function GraphCard({ title, data, color }) {
   return (
-    <div className="p-3 bg-gray-50 rounded-lg border border-gray-100">
-      <div className="text-xs text-gray-500">{label}</div>
-      <div className="mt-1 font-medium" style={{ color: color || "inherit" }}>
-        {value}
-      </div>
+    <div className="bg-gray-50 p-6 rounded-xl shadow">
+      <h3 className="text-xl font-semibold mb-3 text-center">{title}</h3>
+
+      <ResponsiveContainer width="100%" height={220}>
+        <BarChart data={data}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis domain={[0, data[0].value + 20]} />
+          <Tooltip />
+          <Bar dataKey="value" fill={color} radius={[10, 10, 0, 0]} />
+        </BarChart>
+      </ResponsiveContainer>
     </div>
   );
 }

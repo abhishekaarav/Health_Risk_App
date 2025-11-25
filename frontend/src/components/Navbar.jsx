@@ -7,7 +7,7 @@ function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="w-full flex items-center justify-between px-6 py-4 shadow-md bg-gray-50 relative">
+    <nav className="fixed top-0 left-0 z-50 w-full flex items-center justify-between px-6 py-4 shadow-md bg-gray-50">
       {/* Logo */}
       <div className="flex items-center gap-2">
         <img src={logo} alt="PredictiX" className="w-40" />
@@ -30,14 +30,14 @@ function Navbar() {
         <div className="flex items-center gap-4">
           <NavLink
             to="/sign-in"
-            className="px-4 py-2 text-black  hover:text-blue-600 transition"
+            className="px-4 py-2 text-black hover:text-blue-600 transition"
           >
             Sign In
           </NavLink>
 
           <NavLink
             to="/sign-up"
-            className="px-4 py-2 text-black  hover:text-blue-600 transition"
+            className="px-4 py-2 text-black hover:text-blue-600 transition"
           >
             Sign Up
           </NavLink>
@@ -53,7 +53,6 @@ function Navbar() {
       {isOpen && (
         <div className="absolute top-full left-0 w-full bg-gray-200 p-5 md:hidden shadow-lg">
           <div className="flex flex-col gap-4 text-lg">
-            {/* Links */}
             <NavLink
               to="/"
               className="text-gray-800 font-medium hover:text-blue-600"
@@ -78,7 +77,6 @@ function Navbar() {
               About Us
             </NavLink>
 
-            {/* Buttons */}
             <NavLink
               to="/sign-in"
               className="w-full text-center py-2 border border-gray-400 text-black rounded-lg hover:bg-blue-500 transition font-medium"
