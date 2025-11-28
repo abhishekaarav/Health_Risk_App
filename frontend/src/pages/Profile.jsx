@@ -41,14 +41,14 @@ export default function Profile() {
       <div className="max-w-3xl mx-auto bg-white p-6 rounded-2xl shadow-md">
         <h1 className="text-2xl font-bold text-gray-700 mb-6">My Profile</h1>
 
-        {/* Profile Photo */}
-        <div className="flex items-center mb-6">
+        {/* Profile Photo Centered */}
+        <div className="flex flex-col items-center mb-6">
           <img
             src="/user.png"
             alt="Profile"
-            className="w-20 h-20 rounded-full border shadow"
+            className="w-24 h-24 rounded-full border shadow"
           />
-          <button className="ml-4 px-4 py-2 bg-indigo-600 text-white rounded-lg shadow text-sm">
+          <button className="mt-3 px-4 py-2 bg-indigo-600 text-white rounded-lg shadow text-sm hover:bg-indigo-700">
             Change Photo
           </button>
         </div>
@@ -60,10 +60,13 @@ export default function Profile() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="text-sm text-gray-600">Full Name</label>
+            <label className="text-sm text-gray-600 font-semibold">
+              Full Name <span className="text-red-600">*</span>
+            </label>
             <input
               type="text"
               name="name"
+              required
               value={form.name}
               onChange={handleChange}
               className="w-full mt-1 p-2 border rounded-lg"
@@ -71,10 +74,13 @@ export default function Profile() {
           </div>
 
           <div>
-            <label className="text-sm text-gray-600">Email</label>
+            <label className="text-sm text-gray-600 font-semibold">
+              Email <span className="text-red-600">*</span>
+            </label>
             <input
               type="email"
               name="email"
+              required
               value={form.email}
               className="w-full mt-1 p-2 border rounded-lg bg-gray-100 cursor-not-allowed"
               readOnly
@@ -82,9 +88,12 @@ export default function Profile() {
           </div>
 
           <div>
-            <label className="text-sm text-gray-600">Gender</label>
+            <label className="text-sm text-gray-600 font-semibold">
+              Gender <span className="text-red-600">*</span>
+            </label>
             <select
               name="gender"
+              required
               value={form.gender}
               onChange={handleChange}
               className="w-full mt-1 p-2 border rounded-lg"
@@ -96,10 +105,13 @@ export default function Profile() {
           </div>
 
           <div>
-            <label className="text-sm text-gray-600">Age</label>
+            <label className="text-sm text-gray-600 font-semibold">
+              Age <span className="text-red-600">*</span>
+            </label>
             <input
               type="number"
               name="age"
+              required
               value={form.age}
               onChange={handleChange}
               className="w-full mt-1 p-2 border rounded-lg"
@@ -107,10 +119,13 @@ export default function Profile() {
           </div>
 
           <div>
-            <label className="text-sm text-gray-600">Height (cm)</label>
+            <label className="text-sm text-gray-600 font-semibold">
+              Height (cm) <span className="text-red-600">*</span>
+            </label>
             <input
               type="number"
               name="heightCm"
+              required
               value={form.heightCm}
               onChange={handleChange}
               className="w-full mt-1 p-2 border rounded-lg"
@@ -118,10 +133,13 @@ export default function Profile() {
           </div>
 
           <div>
-            <label className="text-sm text-gray-600">Weight (kg)</label>
+            <label className="text-sm text-gray-600 font-semibold">
+              Weight (kg) <span className="text-red-600">*</span>
+            </label>
             <input
               type="number"
               name="weightKg"
+              required
               value={form.weightKg}
               onChange={handleChange}
               className="w-full mt-1 p-2 border rounded-lg"
@@ -143,10 +161,13 @@ export default function Profile() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="md:col-span-2">
-            <label className="text-sm text-gray-600">Current Password</label>
+            <label className="text-sm text-gray-600 font-semibold">
+              Current Password <span className="text-red-600">*</span>
+            </label>
             <input
               type="password"
               name="current"
+              required
               value={password.current}
               onChange={handlePassword}
               className="w-full mt-1 p-2 border rounded-lg"
@@ -154,10 +175,13 @@ export default function Profile() {
           </div>
 
           <div>
-            <label className="text-sm text-gray-600">New Password</label>
+            <label className="text-sm text-gray-600 font-semibold">
+              New Password <span className="text-red-600">*</span>
+            </label>
             <input
               type="password"
               name="newpass"
+              required
               value={password.newpass}
               onChange={handlePassword}
               className="w-full mt-1 p-2 border rounded-lg"
@@ -165,10 +189,13 @@ export default function Profile() {
           </div>
 
           <div>
-            <label className="text-sm text-gray-600">Confirm Password</label>
+            <label className="text-sm text-gray-600 font-semibold">
+              Confirm Password <span className="text-red-600">*</span>
+            </label>
             <input
               type="password"
               name="confirm"
+              required
               value={password.confirm}
               onChange={handlePassword}
               className="w-full mt-1 p-2 border rounded-lg"

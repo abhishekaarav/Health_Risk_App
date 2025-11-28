@@ -6,9 +6,9 @@ import "swiper/css";
 import "swiper/css/pagination";
 
 // Replace with your own metric images
-import Metric1 from "../assets/metrics/metric1.png";
-import Metric2 from "../assets/metrics/metric2.png";
-import Metric3 from "../assets/metrics/metric3.png";
+import Metric1 from "../assets/metrics/metric7.png";
+import Metric2 from "../assets/metrics/metric5.png";
+import Metric3 from "../assets/metrics/metric6.png";
 
 
 export default function MetricsSlider() {

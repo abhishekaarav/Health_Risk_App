@@ -41,8 +41,8 @@ export default function DiabetesPrediction() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-blue-200 ">
-      <div className="max-w-full mx-auto bg-white/30 backdrop-blur-xl shadow-2xl  p-10 border border-white/40">
+    <div className="min-h-screen w-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
+      <div className="w-full h-full bg-white/30 backdrop-blur-xl shadow-2xl p-10 border border-white/40 rounded-none">
         <h1 className="text-4xl font-bold text-center text-gray-800 mb-10">
           Diabetes Risk Prediction
         </h1>
