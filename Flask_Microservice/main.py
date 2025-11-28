@@ -16,16 +16,25 @@ heart_model = joblib.load(heart_model_path)
 
 app = Flask(__name__)
 
-
-def map_risk_label(prob: float) -> str:
+def map_diabetes_label(prob: float) -> str:
     """
     Map probability (0–1) to risk label.
     You can tweak thresholds if you want.
     """
-    if prob < 0.33:
+    if prob < 0.35:
         return "Low"
-    elif prob < 0.66:
+    elif prob < 0.55:
         return "Medium"
+    else:
+        return "High"
+    
+def map_heart_label(prob: float) -> str:
+    """
+    Map probability (0–1) to risk label.
+    You can tweak thresholds if you want.
+    """
+    if prob < 0.35:
+        return "Low"
     else:
         return "High"
 
@@ -58,12 +67,6 @@ def get_heart_suggestions(label: str) -> list[str]:
             "Continue regular cardio exercise (e.g., walking, jogging).",
             "Avoid smoking and limit alcohol intake.",
         ]
-    elif label == "Medium":
-        return [
-            "Schedule a routine heart health check-up.",
-            "Monitor blood pressure and cholesterol regularly.",
-            "Manage stress through relaxation, meditation, or hobbies.",
-        ]
     else:  # High
         return [
             "Consult a cardiologist at the earliest.",
@@ -88,7 +91,7 @@ def predict_diabetes():
         df = pd.DataFrame([data])
 
         proba = float(diabetes_model.predict_proba(df)[0, 1])
-        label = map_risk_label(proba)
+        label = map_diabetes_label(proba)
         suggestions = get_diabetes_suggestions(label)
 
         return jsonify(
@@ -115,7 +118,7 @@ def predict_heart():
         df = pd.DataFrame([data])
 
         proba = float(heart_model.predict_proba(df)[0, 1])
-        label = map_risk_label(proba)
+        label = map_heart_label(proba)
         suggestions = get_heart_suggestions(label)
 
         return jsonify(

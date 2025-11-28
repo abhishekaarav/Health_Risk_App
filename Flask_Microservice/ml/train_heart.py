@@ -1,15 +1,16 @@
-import os
+import joblib
+import numpy as np
+import pandas as pd
 from pathlib import Path
 
-import joblib
-import numpy as pd
-import pandas as pd
+from imblearn.over_sampling import SMOTE
+from imblearn.pipeline import Pipeline  # IMPORTANT: imblearn pipeline
+
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, classification_report
 from sklearn.model_selection import train_test_split
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.preprocessing import OneHotEncoder
 
 
 BASE_DIR = Path(__file__).resolve().parents[1]
@@ -21,13 +22,22 @@ MODEL_DIR.mkdir(exist_ok=True)
 def load_and_preprocess():
     df = pd.read_csv(DATA_PATH)
 
-    # Split "Blood Pressure" (e.g., "158/88") into two numeric columns
+    # --- Split Blood Pressure "120/80" into two numeric columns ---
     bp_split = df["Blood Pressure"].str.split("/", expand=True)
     df["Systolic_BP"] = pd.to_numeric(bp_split[0], errors="coerce")
     df["Diastolic_BP"] = pd.to_numeric(bp_split[1], errors="coerce")
     df.drop(columns=["Blood Pressure"], inplace=True)
 
-    # Target
+    # --- Clean Cholesterol (no unrealistic 0 values) ---
+    df["Cholesterol"] = pd.to_numeric(df["Cholesterol"], errors="coerce")
+    # In your dataset, median is 259 (we recomputed it)
+    valid_chol = df.loc[df["Cholesterol"] > 0, "Cholesterol"]
+    chol_median = float(valid_chol.median())
+    print(f"Using Cholesterol median for cleaning: {chol_median:.2f}")
+
+    # Replace 0 or negative with median
+    df.loc[df["Cholesterol"] <= 0, "Cholesterol"] = chol_median
+
     y = df["Heart Attack Risk"]
     X = df.drop(columns=["Heart Attack Risk"])
 
@@ -38,31 +48,28 @@ def build_pipeline(X: pd.DataFrame):
     categorical_features = ["Sex", "Diet"]
     numeric_features = [col for col in X.columns if col not in categorical_features]
 
-    numeric_transformer = Pipeline(
-        steps=[
-            ("scaler", StandardScaler()),
-        ]
-    )
-
-    categorical_transformer = OneHotEncoder(handle_unknown="ignore")
-
     preprocessor = ColumnTransformer(
         transformers=[
-            ("num", numeric_transformer, numeric_features),
-            ("cat", categorical_transformer, categorical_features),
+            ("num", "passthrough", numeric_features),
+            ("cat", OneHotEncoder(handle_unknown="ignore", sparse_output=False), categorical_features),
         ]
     )
 
     clf = RandomForestClassifier(
-        n_estimators=200,
+        n_estimators=400,
         random_state=42,
-        class_weight="balanced",
+        class_weight="balanced_subsample",
+        max_depth=14,
+        min_samples_split=4,
+        min_samples_leaf=3,
         n_jobs=-1,
     )
 
+    # SMOTE inside pipeline (after preprocessing → all numeric)
     pipeline = Pipeline(
         steps=[
             ("preprocessor", preprocessor),
+            ("smote", SMOTE(random_state=42)),
             ("clf", clf),
         ]
     )
@@ -79,7 +86,8 @@ def train_and_save():
     )
 
     pipeline = build_pipeline(X)
-    print("Training heart attack risk model...")
+
+    print("Training heart model with SMOTE in pipeline...")
     pipeline.fit(X_train, y_train)
 
     y_pred = pipeline.predict(X_test)

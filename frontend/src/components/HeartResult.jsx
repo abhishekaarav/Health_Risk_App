@@ -10,7 +10,7 @@ export default function HeartResult() {
   // Agar koi direct /heart-result pe aa jaye bina data ke
   useEffect(() => {
     if (!result) {
-      navigate("/heart-prediction");
+      navigate("/heart-predict");
     }
   }, [result, navigate]);
 
@@ -20,27 +20,23 @@ export default function HeartResult() {
   const percentage = Math.round((risk_probability || 0) * 100);
 
   const getRiskColor = () => {
-    if (percentage < 30) return "text-green-600 bg-green-50 border-green-200";
-    if (percentage < 60) return "text-yellow-600 bg-yellow-50 border-yellow-200";
+    if (percentage < 35) return "text-green-600 bg-green-50 border-green-200";
     return "text-red-600 bg-red-50 border-red-200";
   };
 
   const getBarBg = () => {
-    if (percentage < 30) return "bg-green-500";
-    if (percentage < 60) return "bg-yellow-500";
+    if (percentage < 35) return "bg-green-500";
     return "bg-red-500";
   };
 
   const getRiskDescription = () => {
-    if (percentage < 30)
+    if (percentage < 35)
       return "Your predicted risk is relatively low. Maintain a healthy lifestyle to keep it this way.";
-    if (percentage < 60)
-      return "You are in the medium risk category. Some lifestyle improvements and regular monitoring are recommended.";
     return "You are in the high risk category. Please consult a doctor as soon as possible and follow medical advice.";
   };
 
   const handleNewPrediction = () => {
-    navigate("/heart-prediction");
+    navigate("/heart-predict");
   };
 
   return (
@@ -112,15 +108,11 @@ export default function HeartResult() {
               <div className="flex flex-wrap gap-3 mt-4 text-xs">
                 <div className="flex items-center gap-1">
                   <span className="w-3 h-3 rounded-full bg-green-500" />
-                  <span>Low (&lt; 30%)</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="w-3 h-3 rounded-full bg-yellow-500" />
-                  <span>Medium (30–60%)</span>
+                  <span>Low (&lt; 35%)</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <span className="w-3 h-3 rounded-full bg-red-500" />
-                  <span>High (&gt; 60%)</span>
+                  <span>High (&gt; 35%)</span>
                 </div>
               </div>
             </div>

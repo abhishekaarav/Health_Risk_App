@@ -1,23 +1,27 @@
-import os
+import joblib
+import pandas as pd
 from pathlib import Path
 
-import joblib
-import numpy as np
-import pandas as pd
-from sklearn.linear_model import LogisticRegression
+from imblearn.over_sampling import SMOTE
+from imblearn.pipeline import Pipeline  # imblearn pipeline (important)
+
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, classification_report
 from sklearn.model_selection import train_test_split
-from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
 
-BASE_DIR = Path(__file__).resolve().parents[1] 
+BASE_DIR = Path(__file__).resolve().parents[1]
 DATA_PATH = BASE_DIR / "data" / "diabetes.csv"
 MODEL_DIR = BASE_DIR / "models"
 MODEL_DIR.mkdir(exist_ok=True)
 
 
 def load_data():
+    """
+    Load diabetes dataset.
+    Assumes target column is 'Outcome' (0 = no diabetes, 1 = diabetes).
+    """
     df = pd.read_csv(DATA_PATH)
     y = df["Outcome"]
     X = df.drop(columns=["Outcome"])
@@ -25,12 +29,30 @@ def load_data():
 
 
 def build_pipeline():
+    """
+    Build ML pipeline:
+    - StandardScaler for numeric features
+    - SMOTE for class balancing
+    - RandomForestClassifier for classification
+    """
+    clf = RandomForestClassifier(
+        n_estimators=350,
+        random_state=42,
+        class_weight="balanced_subsample",
+        max_depth=10,
+        min_samples_split=4,
+        min_samples_leaf=2,
+        n_jobs=-1,
+    )
+
     pipeline = Pipeline(
         steps=[
             ("scaler", StandardScaler()),
-            ("clf", LogisticRegression(max_iter=1000)),
+            ("smote", SMOTE(random_state=42)),
+            ("clf", clf),
         ]
     )
+
     return pipeline
 
 
@@ -43,15 +65,18 @@ def train_and_save():
     )
 
     pipeline = build_pipeline()
-    print("Training diabetes model...")
+
+    print("Training diabetes model with SMOTE in pipeline...")
     pipeline.fit(X_train, y_train)
 
+    # Evaluation
     y_pred = pipeline.predict(X_test)
     acc = accuracy_score(y_test, y_pred)
     print(f"Diabetes model accuracy: {acc:.4f}")
     print("Classification report:")
     print(classification_report(y_test, y_pred))
 
+    # Save model
     model_path = MODEL_DIR / "diabetes_model.pkl"
     joblib.dump(pipeline, model_path)
     print(f"Saved diabetes model to: {model_path}")
