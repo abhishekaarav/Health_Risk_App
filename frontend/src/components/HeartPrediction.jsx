@@ -1,6 +1,10 @@
 import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function HeartPrediction() {
+  const navigate = useNavigate();
+
   const initialState = {
     Age: "",
     Sex: "",
@@ -20,37 +24,77 @@ export default function HeartPrediction() {
     StressLevel: "",
     BMI: "",
     SleepHoursPerDay: "",
+    Meditation: false,
   };
 
   const [form, setForm] = useState(initialState);
+  const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState("");
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
-    setForm({
-      ...form,
+    setForm((prev) => ({
+      ...prev,
       [name]: type === "checkbox" ? checked : value,
-    });
+    }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitted:", form);
-    alert("Form submitted successfully!");
+    setApiError("");
+    setLoading(true);
+
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/heart/heart-predict",
+        form,
+        {
+          withCredentials: true,
+        }
+      );
+
+      const mappedResult = {
+        label: res.data.prediction,
+        risk_probability: res.data.confidence,
+        suggestions: res.data.suggestions || [],
+      };
+
+      // ✅ Alag page pe navigate + result bhejna
+      navigate("/heart-result", { state: { result: mappedResult } });
+    } catch (error) {
+      console.error("AXIOS ERROR:", error);
+      console.log("BACKEND RESPONSE DATA:", error.response?.data);
+
+      setApiError(
+        error.response?.data?.message ||
+          "Something went wrong while predicting. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleReset = () => {
+    setForm(initialState);
+    setApiError("");
   };
 
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center py-10 px-4">
-      <div className="w-full max-w-4xl bg-white shadow-xl rounded-2xl p-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+      <div className="w-full max-w-5xl bg-white shadow-xl rounded-2xl p-8">
+        <h1 className="text-3xl font-bold text-gray-800 mb-2 text-center">
           Heart Attack Risk Prediction
         </h1>
+        <p className="text-center text-gray-500 mb-6">
+          Fill the details below and get your heart risk analyzed instantly.
+        </p>
 
+        {/* FORM */}
         <form
           onSubmit={handleSubmit}
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
-          {/* Auto-generated input fields */}
           {[
             { label: "Age", type: "number", name: "Age" },
             { label: "Sex", type: "selectSex", name: "Sex" },
@@ -139,7 +183,7 @@ export default function HeartPrediction() {
           ))}
 
           {/* CHECKBOX SECTION */}
-          <div className="md:col-span-2 mt-6">
+          <div className="md:col-span-2 mt-4">
             <h2 className="text-xl font-semibold text-gray-700 mb-3">
               Medical & Lifestyle Indicators{" "}
               <span className="text-red-500">*</span>
@@ -174,13 +218,31 @@ export default function HeartPrediction() {
             </label>
           ))}
 
-          {/* SUBMIT BUTTON */}
-          <div className="md:col-span-2 mt-8">
+          {/* ERROR MESSAGE */}
+          {apiError && (
+            <div className="md:col-span-2">
+              <p className="text-red-600 text-sm bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+                {apiError}
+              </p>
+            </div>
+          )}
+
+          {/* SUBMIT + RESET */}
+          <div className="md:col-span-2 mt-6 flex flex-col md:flex-row gap-3">
             <button
               type="submit"
-              className="w-full py-3 bg-indigo-600 text-white font-semibold rounded-xl shadow hover:bg-indigo-700 transition"
+              disabled={loading}
+              className="flex-1 py-3 bg-indigo-600 text-white font-semibold rounded-xl shadow hover:bg-indigo-700 transition disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              Predict Heart Attack Risk
+              {loading ? "Predicting..." : "Predict Heart Attack Risk"}
+            </button>
+
+            <button
+              type="button"
+              onClick={handleReset}
+              className="flex-1 py-3 bg-gray-100 text-gray-800 font-semibold rounded-xl border hover:bg-gray-200 transition"
+            >
+              Reset Form
             </button>
           </div>
         </form>

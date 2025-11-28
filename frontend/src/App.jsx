@@ -14,6 +14,7 @@ import DiabetesPrediction from "./components/DiabetesPrediction";
 import DiabetesResult from "./components/DiabetesResult"; // ⬅ NEW
 
 import Dashboard from "./components/Dashboard";
+import HeartResult from "./components/HeartResult";
 
 export default function App() {
   return (
@@ -36,7 +37,7 @@ export default function App() {
 
         {/* Result Page — New Route */}
         <Route path="/diabetes-result" element={<DiabetesResult />} />
-
+        <Route path="/heart-result" element={<HeartResult />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

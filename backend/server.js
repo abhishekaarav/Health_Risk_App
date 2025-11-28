@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser"; // <<< REQUIRED
 import { connectDB } from "./lib/db.js";
 
 import diabetesRoutes from "./routes/diabetes.routes.js";
+import heartRoutes from "./routes/heart.routes.js";
 import authRouter from "./routes/auth.routes.js";
 
 const app = express();
@@ -33,6 +34,7 @@ app.get("/api/start", (req, res) => {
 
 // 6. API Routes
 app.use("/api/disease", diabetesRoutes);
+app.use("/api/heart", heartRoutes);
 app.use("/api/auth", authRouter);
 
 // 7. GLOBAL ERROR HANDLER
