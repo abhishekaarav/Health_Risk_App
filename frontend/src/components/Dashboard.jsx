@@ -11,7 +11,8 @@ export default function Dashboard() {
       <Sidebar />
 
       {/* Main Content */}
-      <div className="flex-1 ml-20 md:ml-64 p-4 transition-all">
+      <div className="flex-1  p-4 transition-all">
+
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-gray-700">Dashboard</h1>

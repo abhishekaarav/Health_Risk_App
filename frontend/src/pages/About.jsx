@@ -1,7 +1,7 @@
 export default function About() {
   return (
     <section className="min-h-screen bg-gradient-to-br from-[#F4F7FA] to-[#FFFFFF] py-16 px-6 flex justify-center">
-      <div className="max-w-6xl bg-white/75 backdrop-blur-xl rounded-3xl shadow-xl p-10 border border-[#E5EAF0]">
+      <div className="max-w-6xl bg-gray-200 backdrop-blur-xl rounded-3xl shadow-xl p-10 border border-[#E5EAF0]">
         {/* HEADER */}
         <h1
           className="text-5xl font-extrabold text-center mb-6 bg-clip-text text-transparent"

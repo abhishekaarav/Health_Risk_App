@@ -19,7 +19,7 @@ function Navbar() {
           Home
         </NavLink>
 
-        <NavLink to="/predictors" className="hover:text-blue-600 transition">
+        <NavLink to="dashboard" className="hover:text-blue-600 transition">
           Predictors
         </NavLink>
 

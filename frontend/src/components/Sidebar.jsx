@@ -28,12 +28,12 @@ export default function Sidebar() {
       {/* SIDEBAR MAIN */}
       <div
         className={`
-          bg-white shadow-xl h-screen fixed top-0 left-0 z-40 p-4 pt-6 
-          transition-all duration-300 
-          
-          ${open ? "w-64" : "w-20"} 
-          ${mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
-        `}
+    bg-white shadow-xl h-screen fixed top-[80px] left-0 z-40 p-4 pt-6 
+    transition-all duration-300 
+    
+    ${open ? "w-64" : "w-20"} 
+    ${mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
+  `}
       >
         {/* CLOSE BUTTON ON MOBILE */}
         <button
