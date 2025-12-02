@@ -24,6 +24,8 @@ import HeartPrediction from "./components/HeartPrediction";
 import DiabetesPrediction from "./components/DiabetesPrediction";
 import HeartResult from "./components/HeartResult";
 import DiabetesResult from "./components/DiabetesResult";
+import BMICalculator from "./pages/BMICalculator";
+import Faqs from "./pages/Faqs";
 
 export default function App() {
   return (
@@ -36,6 +38,8 @@ export default function App() {
         <Route path="/about" element={<About />} />
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/bmi-calculator" element={<BMICalculator />} />
+        <Route path="/faqs" element={<Faqs />} />
 
         {/* SIDEBAR PAGES */}
         <Route element={<DashboardLayout />}>

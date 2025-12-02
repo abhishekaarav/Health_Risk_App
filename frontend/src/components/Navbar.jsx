@@ -19,13 +19,26 @@ function Navbar() {
           Home
         </NavLink>
 
+        <NavLink to="/about" className="hover:text-blue-600 transition">
+          About Us
+        </NavLink>
+
+        <NavLink to="/faqs" className="hover:text-blue-600 transition">
+          FAQS
+        </NavLink>
+
         <NavLink to="dashboard" className="hover:text-blue-600 transition">
           Predictors
         </NavLink>
 
-        <NavLink to="/about" className="hover:text-blue-600 transition">
-          About Us
+        <NavLink
+          to="/bmi-calculator"
+          className="hover:text-blue-600 transition"
+        >
+          BMI Calculator
         </NavLink>
+
+        
 
         <div className="flex items-center gap-4">
           <NavLink
