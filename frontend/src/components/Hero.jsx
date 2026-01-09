@@ -1,4 +1,5 @@
 import React from "react";
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 import img1 from "../assets/homepageImg/homeimg7.jpg";
 import img2 from "../assets/homepageImg/homeimg6.jpg";
@@ -19,6 +20,7 @@ import HospitalLocator from "./HospitalLocator"
 import Footer from "./Footer";
 
 function Hero() {
+  const diseaseRef = useRef(null);
   const sliderImages = [img1, img2, img3, img4, img5];
 
   return (
@@ -72,14 +74,20 @@ function Hero() {
               </p>
 
               <div className="flex flex-wrap items-center gap-4">
-                <Link to="/predictors">
+                <Link to="/metrics">
                   <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl shadow-md transition">
                     Diagnose Now
                   </button>
                 </Link>
 
-                <button className="text-blue-700 font-medium hover:text-orange-500 transition">
-                  View Supported Diseases
+                <button onClick={() => diseaseRef.current?.scrollIntoView({
+                  behavior: "smooth",
+                  block: "start",
+                })
+              }
+              className="text-blue-700 font-medium hover:text-orange-500 transition"
+                >
+                View Supported Diseases
                 </button>
               </div>
 
@@ -136,7 +144,9 @@ function Hero() {
           </div>
         </div>
       </section>
-      <DiseaseCategories />
+      <div ref={diseaseRef}>
+        <DiseaseCategories />
+      </div>
       <HospitalLocator />
       <Footer/>
     </>
