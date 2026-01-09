@@ -1,110 +1,119 @@
-import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import logo from "../assets/PredictiX_main_logo.png";
+import { AuthContext } from "../context/AuthContext";
 
 function Navbar() {
+  const { user, logout } = useContext(AuthContext);
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const isLoggedIn = !!user;
+
+  const handleLogout = () => {
+    logout();
+    setIsOpen(false);
+    navigate("/sign-in");
+  };
+
+  // common hover style
+  const navItem = "transition hover:text-blue-600 hover:font-semibold";
 
   return (
-    <nav className="fixed top-0 left-0 z-50 w-full flex items-center justify-between px-6 py-4 shadow-md bg-gray-50">
+    <nav className="fixed top-0 left-0 z-50 w-full bg-gray-50 shadow-md px-6 py-4 flex items-center justify-between">
       {/* Logo */}
-      <div className="flex items-center gap-2">
-        <img src={logo} alt="PredictiX" className="w-40" />
-      </div>
+      <img src={logo} alt="PredictiX" className="w-40" />
 
-      {/* Desktop Links */}
-      <div className="hidden md:flex items-center gap-6 text-lg font-medium">
-        <NavLink to="/" className="hover:text-blue-600 transition">
+      {/* Desktop Menu */}
+      <div className="hidden md:flex items-center gap-6 font-medium">
+        <NavLink to="/" className={navItem}>
           Home
         </NavLink>
-
-        <NavLink to="/about" className="hover:text-blue-600 transition">
+        <NavLink to="/about" className={navItem}>
           About Us
         </NavLink>
-
-        <NavLink to="/faqs" className="hover:text-blue-600 transition">
-          FAQS
+        <NavLink to="/faqs" className={navItem}>
+          FAQs
         </NavLink>
-
-        <NavLink to="dashboard" className="hover:text-blue-600 transition">
+        <NavLink to="/dashboard" className={navItem}>
           Predictors
         </NavLink>
-
-        <NavLink
-          to="/bmi-calculator"
-          className="hover:text-blue-600 transition"
-        >
+        <NavLink to="/bmi-calculator" className={navItem}>
           BMI Calculator
         </NavLink>
 
-        
-
-        <div className="flex items-center gap-4">
-          <NavLink
-            to="/sign-in"
-            className="px-4 py-2 text-black hover:text-blue-600 transition"
-          >
-            Sign In
-          </NavLink>
-
-          <NavLink
-            to="/sign-up"
-            className="px-4 py-2 text-black hover:text-blue-600 transition"
-          >
-            Sign Up
-          </NavLink>
-        </div>
+        {/* 🔐 AUTH (same position always) */}
+        {!isLoggedIn ? (
+          <div className="flex items-center">
+            <NavLink to="/sign-in" className={navItem}>
+              Sign In
+            </NavLink>
+            <span className="mx-1">/</span>
+            <NavLink to="/sign-up" className={navItem}>
+              Sign Up
+            </NavLink>
+          </div>
+        ) : (
+          <button onClick={handleLogout} className={navItem}>
+            Sign Out
+          </button>
+        )}
       </div>
 
-      {/* Mobile Menu Icon */}
+      {/* Mobile Icon */}
       <div className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
-        {isOpen ? <FaTimes size={28} /> : <FaBars size={28} />}
+        {isOpen ? <FaTimes size={26} /> : <FaBars size={26} />}
       </div>
 
       {/* Mobile Menu */}
       {isOpen && (
         <div className="absolute top-full left-0 w-full bg-gray-200 p-5 md:hidden shadow-lg">
-          <div className="flex flex-col gap-4 text-lg">
+          <div className="flex flex-col gap-4 font-medium">
             <NavLink
               to="/"
-              className="text-gray-800 font-medium hover:text-blue-600"
               onClick={() => setIsOpen(false)}
+              className={navItem}
             >
               Home
             </NavLink>
-
             <NavLink
-              to="/predictors"
-              className="text-gray-800 font-medium hover:text-blue-600"
+              to="/dashboard"
               onClick={() => setIsOpen(false)}
+              className={navItem}
             >
               Predictors
             </NavLink>
-
             <NavLink
-              to="/about"
-              className="text-gray-800 font-medium hover:text-blue-600"
+              to="/bmi-calculator"
               onClick={() => setIsOpen(false)}
+              className={navItem}
             >
-              About Us
+              BMI Calculator
             </NavLink>
 
-            <NavLink
-              to="/sign-in"
-              className="w-full text-center py-2 border border-gray-400 text-black rounded-lg hover:bg-blue-500 transition font-medium"
-              onClick={() => setIsOpen(false)}
-            >
-              Sign In
-            </NavLink>
-
-            <NavLink
-              to="/sign-up"
-              className="w-full text-center py-2 border border-gray-400 text-black rounded-lg hover:bg-blue-500 transition font-medium"
-              onClick={() => setIsOpen(false)}
-            >
-              Sign Up
-            </NavLink>
+            {!isLoggedIn ? (
+              <>
+                <NavLink
+                  to="/sign-in"
+                  onClick={() => setIsOpen(false)}
+                  className={navItem}
+                >
+                  Sign In
+                </NavLink>
+                <NavLink
+                  to="/sign-up"
+                  onClick={() => setIsOpen(false)}
+                  className={navItem}
+                >
+                  Sign Up
+                </NavLink>
+              </>
+            ) : (
+              <button onClick={handleLogout} className={`text-left ${navItem}`}>
+                Sign Out
+              </button>
+            )}
           </div>
         </div>
       )}
