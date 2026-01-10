@@ -2,15 +2,23 @@ import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
+import img from "../assets/LoginPageImg.png";
+import {
+  FaHeartbeat,
+  FaEnvelope,
+  FaLock,
+  FaSignInAlt,
+  FaGoogle,
+} from "react-icons/fa";
 
 export default function SignIn() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -18,7 +26,7 @@ export default function SignIn() {
   const handleChange = (e) => {
     setFormData((prev) => ({
       ...prev,
-      [e.target.id]: e.target.value,
+      [e.target.name]: e.target.value,
     }));
   };
 
@@ -28,13 +36,11 @@ export default function SignIn() {
 
     try {
       setLoading(true);
-
       const res = await axios.post("/api/auth/signin", formData, {
         withCredentials: true,
       });
 
       const data = res.data;
-      // console.log("LOGIN RESPONSE:", data);
 
       if (data.success === false) {
         setError(data.message);
@@ -42,9 +48,7 @@ export default function SignIn() {
         return;
       }
 
-      // 🔥 login success → context + localStorage
       login(data.user);
-
       setLoading(false);
       navigate("/");
     } catch (err) {
@@ -54,110 +58,168 @@ export default function SignIn() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100 p-4">
-      <div className="w-full max-w-md">
-        <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-white/20">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full mb-4">
-              <svg
-                className="w-8 h-8 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-                />
-              </svg>
-            </div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-              Welcome Back
-            </h1>
-            <p className="text-gray-600 mt-2">
-              Sign in to continue to your account
-            </p>
+    <div className="min-h-screen w-full bg-[#fdecec] flex items-center justify-center">
+      <div className="w-full h-screen grid grid-cols-1 lg:grid-cols-2 px-10 lg:px-20">
+        {/* LEFT SECTION */}
+        <div className="flex flex-col justify-center max-w-md w-full mx-auto">
+          {/* BRAND */}
+          <div className="flex items-center gap-3 mb-10">
+            <FaHeartbeat className="text-indigo-600 text-5xl animate-pulse" />
+            <h2 className="text-5xl font-bold tracking-wide text-indigo-600">
+              MedicareAI
+            </h2>
           </div>
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Email */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700 block">
-                Email Address
-              </label>
+          <h1 className="text-4xl font-bold mb-2">Login now</h1>
+          <p className="text-gray-600 mb-6">Hi, Welcome back 👋</p>
+
+          {/* GOOGLE BUTTON */}
+          <button
+            type="button"
+            className="
+              w-full bg-white text-black py-3 rounded-lg flex border
+              items-center justify-center gap-3 mb-6
+              cursor-pointer
+              transition-all duration-300
+              hover:shadow-xl hover:-translate-y-1
+              active:scale-95
+            "
+          >
+            <img
+              src="https://www.svgrepo.com/show/475656/google-color.svg"
+              alt="google"
+              className="w-5 h-5"
+            />
+            Continue with Google
+          </button>
+
+          {/* Divider */}
+          <div className="flex items-center mb-6">
+            <div className="flex-grow h-px bg-gray-300"></div>
+            <span className="px-3 text-sm text-gray-500">
+              or Login with Email
+            </span>
+            <div className="flex-grow h-px bg-gray-300"></div>
+          </div>
+
+          {/* FORM */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* EMAIL */}
+            <div className="relative">
+              <FaEnvelope className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
-                id="email"
                 type="email"
-                placeholder="Enter your email"
+                name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none bg-white/50"
+                placeholder="Email"
+                className="
+                  w-full py-3 pl-12 pr-4 rounded-lg
+                  bg-white border border-gray-300
+                  outline-none
+                  transition-all duration-300
+                  hover:border-indigo-400
+                  focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200
+                "
                 required
               />
             </div>
 
-            {/* Password */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700 block">
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Enter your password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="w-full pl-4 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none bg-white/50"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500"
-                >
-                  {showPassword ? "Hide" : "Show"}
-                </button>
-              </div>
+            {/* PASSWORD */}
+            <div className="relative">
+              <FaLock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Password"
+                className="
+                  w-full py-3 pl-12 pr-12 rounded-lg
+                  bg-white border border-gray-300
+                  outline-none
+                  transition-all duration-300
+                  hover:border-indigo-400
+                  focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200
+                "
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="
+                  absolute right-4 top-1/2 -translate-y-1/2
+                  text-gray-600
+                  transition-transform duration-300
+                  hover:scale-125
+                "
+              >
+                {showPassword ? "🙈" : "👁️"}
+              </button>
             </div>
 
-            {/* Error */}
+            {/* Remember / Forgot */}
+            <div className="flex items-center justify-between text-sm">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="accent-indigo-600 cursor-pointer"
+                />
+                Remember Me
+              </label>
+              <span className="text-indigo-600 cursor-pointer hover:underline">
+                Forgot Password?
+              </span>
+            </div>
+
+            {/* ERROR */}
             {error && (
               <p className="text-red-600 text-sm text-center">{error}</p>
             )}
 
-            {/* Button */}
+            {/* LOGIN BUTTON */}
             <button
+              type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-lg font-semibold disabled:opacity-50"
+              className="
+                w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold
+                flex items-center justify-center gap-3
+                transition-all duration-300
+                hover:bg-indigo-700 hover:shadow-2xl hover:-translate-y-1
+                active:scale-95
+                disabled:opacity-50 disabled:cursor-not-allowed
+              "
             >
-              {loading ? "Signing In..." : "Sign In"}
+              <FaSignInAlt />
+              {loading ? "Logging in..." : "Login"}
             </button>
           </form>
 
-          {/* Footer */}
-          <div className="mt-6 text-center">
-            <p className="text-gray-600 text-sm">
-              Don&apos;t have an account?{" "}
-              <Link
-                to="/sign-up"
-                className="font-semibold text-indigo-600 hover:text-indigo-700"
-              >
-                Sign up
-              </Link>
-            </p>
-          </div>
+          {/* FOOTER */}
+          <p className="text-sm text-center mt-4">
+            Not registered yet?{" "}
+            <Link
+              to="/sign-up"
+              className="text-indigo-600 font-semibold hover:underline"
+            >
+              Create an account
+            </Link>
+          </p>
         </div>
 
-        <p className="text-center text-gray-500 text-xs mt-6">
-          By signing in, you agree to our Terms of Service and Privacy Policy
-        </p>
+        {/* RIGHT SECTION */}
+        <div className="hidden lg:flex items-center justify-center">
+          <img
+            src={img}
+            alt="login illustration"
+            className="
+              w-full max-w-3xl h-auto object-contain
+              transition-transform duration-700
+              hover:scale-105
+            "
+          />
+        </div>
       </div>
     </div>
   );
 }
-

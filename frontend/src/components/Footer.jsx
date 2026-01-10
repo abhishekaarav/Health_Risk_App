@@ -21,10 +21,10 @@ export default function Footer() {
           <div>
             <h2 className="text-2xl font-bold text-white flex items-center gap-2">
               <FaBrain className="text-blue-500" size={26} />
-              PredictiX
+              MedicareAI
             </h2>
             <p className="mt-3 text-sm text-gray-400 leading-6">
-              PredictiX — AI-powered disease prediction & advanced hospital
+              MedicareAI — AI-powered disease prediction & advanced hospital
               locator. Your smart health companion for instant medical insights.
             </p>
 
@@ -137,7 +137,7 @@ export default function Footer() {
 
         {/* Divider */}
         <div className="mt-10 border-t border-gray-700 pt-5 text-center text-sm text-gray-500">
-          © {new Date().getFullYear()} PredictiX — All Rights Reserved.
+          © {new Date().getFullYear()} MedicareAI — All Rights Reserved.
         </div>
       </div>
     </footer>

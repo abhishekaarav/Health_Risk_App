@@ -37,7 +37,7 @@ function Hero() {
           pagination={{ clickable: true }}
           navigation={true}
           modules={[Autoplay, Pagination, Navigation]}
-          className="w-screen h-[250px] sm:h-[300px] md:h-[350px]"
+          className="w-screen h-[220px] sm:h-[330px] md:h-[420px]"
         >
           {sliderImages.map((img, index) => (
             <SwiperSlide key={index} className="w-screen h-full">
@@ -80,14 +80,16 @@ function Hero() {
                   </button>
                 </Link>
 
-                <button onClick={() => diseaseRef.current?.scrollIntoView({
-                  behavior: "smooth",
-                  block: "start",
-                })
-              }
-              className="text-blue-700 font-medium hover:text-orange-500 transition"
+                <button
+                  onClick={() =>
+                    diseaseRef.current?.scrollIntoView({
+                      behavior: "smooth",
+                      block: "start",
+                    })
+                  }
+                  className="text-blue-700 font-medium hover:text-orange-500 transition"
                 >
-                View Supported Diseases
+                  View Supported Diseases
                 </button>
               </div>
 
@@ -148,7 +150,7 @@ function Hero() {
         <DiseaseCategories />
       </div>
       <HospitalLocator />
-      <Footer/>
+      <Footer />
     </>
   );
 }
