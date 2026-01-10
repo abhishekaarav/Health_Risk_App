@@ -5,19 +5,11 @@ import logo from "../assets/PredictiX_main_logo.png";
 import { AuthContext } from "../context/AuthContext";
 
 function Navbar() {
-  const { user, logout } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
   const isLoggedIn = !!user;
-
-  const handleLogout = () => {
-    logout();
-    setIsOpen(false);
-    navigate("/sign-in");
-  };
-
-  // common hover style
   const navItem = "transition hover:text-blue-600 hover:font-semibold";
 
   return (
@@ -43,7 +35,7 @@ function Navbar() {
           BMI Calculator
         </NavLink>
 
-        {/* 🔐 AUTH (same position always) */}
+        {/* AUTH */}
         {!isLoggedIn ? (
           <div className="flex items-center">
             <NavLink to="/sign-in" className={navItem}>
@@ -55,9 +47,16 @@ function Navbar() {
             </NavLink>
           </div>
         ) : (
-          <button onClick={handleLogout} className={navItem}>
-            Sign Out
-          </button>
+          <img
+            src={
+              user?.profilePhoto
+                ? `http://localhost:5000${user.profilePhoto}`
+                : "/user.png"
+            }
+            alt="Profile"
+            onClick={() => navigate("/profile")}
+            className="w-9 h-9 rounded-full object-cover cursor-pointer border hover:scale-105 transition"
+          />
         )}
       </div>
 
@@ -110,9 +109,13 @@ function Navbar() {
                 </NavLink>
               </>
             ) : (
-              <button onClick={handleLogout} className={`text-left ${navItem}`}>
-                Sign Out
-              </button>
+              <NavLink
+                to="/profile"
+                onClick={() => setIsOpen(false)}
+                className={navItem}
+              >
+                Profile
+              </NavLink>
             )}
           </div>
         </div>
