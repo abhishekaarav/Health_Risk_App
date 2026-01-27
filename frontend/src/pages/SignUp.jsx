@@ -19,18 +19,57 @@ export default function SignUp() {
     password: "",
   });
   const [error, setError] = useState(null);
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
 
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
+    const { id, value } = e.target;
+    setFormData({ ...formData, [id]: value });
+
+    // Email validation
+    if (id === "email") {
+      if (!emailPattern.test(value)) {
+        setEmailError("Invalid email format");
+      } else {
+        setEmailError("");
+      }
+    }
+
+    // Password validation
+    if (id === "password") {
+      if (!passwordPattern.test(value)) {
+        setPasswordError(
+          "Min 8 chars, 1 uppercase, 1 lowercase & 1 number"
+        );
+      } else {
+        setPasswordError("");
+      }
+    }
   };
 
-  const handleSubmit = async (e) => {
+   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+
+    // ✅ FINAL CLIENT CHECK
+    if (!emailPattern.test(formData.email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
+    if (!passwordPattern.test(formData.password)) {
+      setError(
+        "Password must be at least 8 characters and include uppercase, lowercase, and a number"
+      );
+      return;
+    }
 
     try {
       setLoading(true);
@@ -162,6 +201,7 @@ export default function SignUp() {
             </div>
 
             {/* EMAIL */}
+            <div>
             <div className="relative">
               <FaEnvelope className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
@@ -180,8 +220,13 @@ export default function SignUp() {
                 required
               />
             </div>
+            {emailError && (
+                <p className="text-red-600 text-sm mt-1">{emailError}</p>
+              )}
+            </div>
 
             {/* PASSWORD */}
+            <div>
             <div className="relative">
               <FaLock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
@@ -210,6 +255,10 @@ export default function SignUp() {
               >
                 {showPassword ? "🙈" : "👁️"}
               </button>
+            </div>
+            {passwordError && (
+                <p className="text-red-600 text-sm mt-1">{passwordError}</p>
+              )}
             </div>
 
             {error && (
