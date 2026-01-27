@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaBars, FaTimes, FaLock, FaPen } from "react-icons/fa";
-import logo from "../assets/MedicareAiLogo1.jpeg";
+import logo from "../assets/MedicareAiLogo2.png";
 import { AuthContext } from "../context/AuthContext";
 
 function Navbar() {
@@ -12,26 +12,26 @@ function Navbar() {
   const isLoggedIn = !!user;
 
   const navItem =
-    "relative transition text-gray-700 hover:text-blue-600 font-medium";
+    "relative transition text-black hover:text-blue-600 font-medium";
 
   const activeNav =
     "text-blue-600 font-semibold after:absolute after:left-0 after:-bottom-1 after:w-full after:h-[2px] after:bg-blue-600";
 
   return (
-    <nav className="fixed top-0 left-0 z-50 w-full bg-white shadow-md">
-      <div className="px-14 py-4 flex items-center justify-between">
-        {/* LEFT : LOGO */}
-        <div className="flex items-center px-8">
+    <nav className="fixed top-0 left-0 z-50 w-full bg-indigo-200 shadow-md">
+      <div className="px-14 py-4 flex items-center justify-between relative">
+        {/* LOGO (BIG BUT NAV HEIGHT SAME) */}
+        <div className="absolute left-8 top-1/2 -translate-y-1/2">
           <img
             src={logo}
             alt="MedicareAI"
-            className="h-20 w-70 cursor-pointer"
+            className="h-45 cursor-pointer ml-5"
             onClick={() => navigate("/")}
           />
         </div>
 
-        {/* CENTER : NAV ITEMS */}
-        <div className="hidden md:flex flex-1 justify-center gap-10">
+        {/* CENTER NAV */}
+        <div className="hidden md:flex flex-1 justify-center gap-10 ml-50">
           <NavLink
             to="/"
             className={({ isActive }) =>
@@ -78,39 +78,27 @@ function Navbar() {
           </NavLink>
         </div>
 
-        {/* RIGHT : AUTH BUTTONS */}
+        {/* RIGHT AUTH */}
         <div className="hidden md:flex items-center px-12">
           {!isLoggedIn ? (
             <div className="flex items-center gap-8">
-              {/* LOGIN */}
               <NavLink
                 to="/sign-in"
                 className="relative flex items-center gap-3 px-4 py-2 text-[22px] font-semibold
-                   border border-blue-900 text-blue-900
-                   hover:bg-blue-900 hover:text-white transition
-                   rounded-md pr-6"
+                border border-blue-900 text-blue-900 hover:bg-blue-900 hover:text-white transition rounded-md pr-6"
               >
-                <span
-                  className="absolute -left-4 flex items-center justify-center
-                     w-8 h-8 rounded-full bg-blue-900 text-white"
-                >
+                <span className="absolute -left-4 w-8 h-8 flex items-center justify-center rounded-full bg-blue-900 text-white">
                   <FaLock size={16} />
                 </span>
                 <span className="ml-4">Login</span>
               </NavLink>
 
-              {/* REGISTER */}
               <NavLink
                 to="/sign-up"
                 className="relative flex items-center gap-3 px-4 py-2 text-[22px] font-semibold
-                   bg-blue-900 text-white
-                   hover:bg-blue-900 transition
-                   rounded-md pr-6"
+                bg-blue-900 text-white rounded-md pr-6"
               >
-                <span
-                  className="absolute -left-4 flex items-center justify-center
-                     w-8 h-8 rounded-full bg-blue-900 text-white border"
-                >
+                <span className="absolute -left-4 w-8 h-8 flex items-center justify-center rounded-full bg-blue-900 text-white border">
                   <FaPen size={16} />
                 </span>
                 <span className="ml-4">Register</span>
@@ -131,7 +119,7 @@ function Navbar() {
         </div>
 
         {/* MOBILE ICON */}
-        <div className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
+        <div className="md:hidden z-50" onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? <FaTimes size={26} /> : <FaBars size={26} />}
         </div>
       </div>

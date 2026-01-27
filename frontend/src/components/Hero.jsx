@@ -37,7 +37,7 @@ function Hero() {
           pagination={{ clickable: true }}
           navigation={true}
           modules={[Autoplay, Pagination, Navigation]}
-          className="w-screen h-[220px] sm:h-[330px] md:h-[420px]"
+          className="w-screen h-[150px] sm:h-[220px] md:h-[330px]"
         >
           {sliderImages.map((img, index) => (
             <SwiperSlide key={index} className="w-screen h-full">
