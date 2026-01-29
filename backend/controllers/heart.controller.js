@@ -1,4 +1,5 @@
 import HeartHealthMetric from "../models/Heart_HealthMetric.js";
+import PredictionHistory from "../models/PredictionHistory.js";
 import axios from "axios";
 
 export const heartPrediction = async (req, res) => {
@@ -121,6 +122,15 @@ export const heartPrediction = async (req, res) => {
     }
 
     const result = flaskRes.data?.result;
+
+    // ✅ SAVE HEART PREDICTION HISTORY
+    await PredictionHistory.create({
+    userId,
+    disease: "Heart",
+    prediction: result.label,            // LOW / MEDIUM / HIGH
+    confidence: result.risk_probability, // 0 - 1
+    suggestions: result.suggestions,
+    });
 
     if (!result) {
       return res.status(500).json({

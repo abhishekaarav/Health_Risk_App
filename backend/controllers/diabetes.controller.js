@@ -1,4 +1,5 @@
 import DiabetesHealthMetric from "../models/Diabetes_HealthMetric.js";
+import PredictionHistory from "../models/PredictionHistory.js";
 import axios from "axios";
 
 export const diabetesPrediction = async (req, res) => {
@@ -50,6 +51,15 @@ export const diabetesPrediction = async (req, res) => {
     );
 
     const result = flaskRes.data.result;
+
+    // Save prediction history
+    await PredictionHistory.create({
+      userId,
+      disease: "Diabetes",
+      prediction: result.label,
+      confidence: result.risk_probability,
+      suggestions: result.suggestions,
+    });
 
     // Return correct values to frontend
     res.status(200).json({

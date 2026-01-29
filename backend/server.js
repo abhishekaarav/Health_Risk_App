@@ -8,6 +8,7 @@ import { fileURLToPath } from "url";
 import { connectDB } from "./lib/db.js";
 import diabetesRoutes from "./routes/diabetes.routes.js";
 import heartRoutes from "./routes/heart.routes.js";
+import historyRoutes from "./routes/history.routes.js";
 import authRouter from "./routes/auth.routes.js";
 import userRouter from "./routes/user.routes.js";
 
@@ -35,6 +36,7 @@ app.use("/api/disease", diabetesRoutes);
 app.use("/api/heart", heartRoutes);
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
+app.use("/api", historyRoutes);
 
 app.use((err, req, res, next) => {
   res.status(err.statusCode || 500).json({
