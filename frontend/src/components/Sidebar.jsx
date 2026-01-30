@@ -135,7 +135,7 @@ function SidebarItem({ to, icon, text, closeMobile, path, isSignOut }) {
           isSignOut
             ? "text-red-600 hover:bg-red-50 hover:translate-x-1 border border-transparent hover:border-red-200"
             : active
-              ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-200"
+              ? "bg-gradient-to-r from-zinc-500 to-zinc-600 text-white shadow-lg shadow-indigo-200"
               : "text-gray-700 hover:bg-gray-200 hover:translate-x-1"
         }
       `}
@@ -189,7 +189,7 @@ function SidebarItem({ to, icon, text, closeMobile, path, isSignOut }) {
 
       {/* Active Pill Background Animation */}
       {active && !isSignOut && (
-        <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-purple-500 to-indigo-600 opacity-90"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-zinc-600 via-zinc-500 to-zinc-600 opacity-90"></div>
       )}
     </Link>
   );

@@ -75,7 +75,7 @@ export default function Dashboard() {
             </p>
           </div>
           <button
-            className="group relative px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl shadow-lg text-sm font-medium overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-105"
+            className="group relative px-6 py-3 bg-gradient-to-r from-zinc-500 to-zinc-600 text-white rounded-xl shadow-lg text-sm font-medium overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-105"
             onClick={() => navigate("/metrics")}
           >
             <span className="relative z-10 flex items-center gap-2">

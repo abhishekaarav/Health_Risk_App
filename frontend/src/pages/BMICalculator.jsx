@@ -67,34 +67,9 @@ export default function BMICalculator() {
         BMI Calculator
       </h1>
 
-      {/* TABS */}
-      <div className="flex gap-4 mt-8 bg-white p-3 rounded-xl shadow-lg border">
-        {[
-          { id: "us", label: "US Units" },
-          { id: "metric", label: "Metric Units" },
-          { id: "other", label: "Other Units" },
-        ].map((t) => (
-          <button
-            key={t.id}
-            onClick={() => setTab(t.id)}
-            className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all ${
-              tab === t.id
-                ? "bg-blue-600 text-white shadow-xl scale-105"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            }`}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
-
       <div className="flex flex-col md:flex-row gap-10 w-full max-w-6xl mt-10">
         {/* LEFT FORM */}
         <div className="w-full md:w-[40%] bg-white/80 backdrop-blur-lg p-8 rounded-2xl shadow-2xl border">
-          <h2 className="font-bold text-2xl mb-6 text-blue-900">
-            {tab === "metric" ? "Metric" : tab === "us" ? "US" : "Other"} Units
-          </h2>
-
           {/* AGE */}
           <label className="font-semibold flex items-center gap-2 text-gray-700">
             👤 Age
