@@ -59,8 +59,13 @@ export default function Profile() {
       });
       login(res.data.user);
       setImgMsg("Profile image updated");
-    } catch {
-      setImgErr("Image upload failed");
+    } catch (err) {
+      if (err.response?.status === 401) {
+        logout();
+        navigate("/sign-in");
+      } else {
+        setImgErr("Image upload failed");
+      }
     }
   };
 
@@ -78,8 +83,13 @@ export default function Profile() {
 
       login(res.data.user);
       alert("Profile updated successfully");
-    } catch {
-      alert("Profile update failed");
+    } catch (err) {
+      if (err.response?.status === 401) {
+        logout();
+        navigate("/sign-in");
+      } else {
+        alert("Profile update failed");
+      }
     }
   };
 
@@ -99,8 +109,13 @@ export default function Profile() {
 
       setPassword({ current: "", newpass: "", confirm: "" });
       alert("Password updated");
-    } catch {
-      alert("Password change failed");
+    } catch (err) {
+      if (err.response?.status === 401) {
+        logout();
+        navigate("/sign-in");
+      } else {
+        alert("Password change failed");
+      }
     }
   };
 
@@ -112,7 +127,6 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-50 to-emerald-50 flex justify-center items-center p-6">
       <div className="w-full max-w-4xl bg-white rounded-3xl shadow-xl p-10">
-        {/* HEADER */}
         <div className="flex flex-col items-center mb-10">
           <h1 className="text-3xl font-bold text-gray-800 mb-4">My Profile</h1>
 
@@ -123,81 +137,72 @@ export default function Profile() {
             onChange={(e) => handleImageUpload(e.target.files[0])}
           />
 
-          <img
-            src={
-              user?.profilePhoto
-                ? `http://localhost:5000${user.profilePhoto}`
-                : "/user.png"
-            }
-            onClick={() => fileRef.current.click()}
-            className="w-32 h-32 rounded-full border-4 border-indigo-500 object-cover cursor-pointer hover:scale-105 transition"
-          />
+          {/* Avatar */}
+          {user?.profilePhoto && !user.profilePhoto.includes("default") ? (
+            <img
+              src={`http://localhost:5000${user.profilePhoto}`}
+              onClick={() => fileRef.current.click()}
+              className="w-32 h-32 rounded-full border-4 border-indigo-500 object-cover cursor-pointer hover:scale-105 transition"
+            />
+          ) : (
+            <div
+              onClick={() => fileRef.current.click()}
+              className="w-32 h-32 rounded-full border-4 border-indigo-500 flex items-center justify-center text-4xl font-bold text-indigo-600 bg-indigo-100 cursor-pointer hover:scale-105 transition"
+            >
+              {user?.email?.charAt(0).toUpperCase()}
+            </div>
+          )}
 
           {imgMsg && <p className="text-green-600 mt-2 text-sm">{imgMsg}</p>}
           {imgErr && <p className="text-red-600 mt-2 text-sm">{imgErr}</p>}
         </div>
 
-        {/* PERSONAL INFORMATION CARD */}
+        {/* PERSONAL INFO */}
         <div className="bg-sky-50 border border-sky-200 rounded-2xl p-8 mb-10">
           <h2 className="text-xl font-semibold text-sky-700 mb-6">
             Personal Information
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="text-sm text-gray-500">Full Name</label>
-              <input
-                name="username"
-                value={form.username}
-                onChange={handleChange}
-                className="w-full mt-1 p-3 border rounded-lg focus:ring-2 focus:ring-sky-400 outline-none"
-              />
-            </div>
-
-            <div>
-              <label className="text-sm text-gray-500">Email</label>
-              <input
-                value={form.email}
-                readOnly
-                className="w-full mt-1 p-3 border rounded-lg bg-gray-100"
-              />
-            </div>
-
-            <div>
-              <label className="text-sm text-gray-500">Gender</label>
-              <select
-                name="gender"
-                value={form.gender}
-                onChange={handleChange}
-                className="w-full mt-1 p-3 border rounded-lg"
-              >
-                <option value="">Select</option>
-                <option>Male</option>
-                <option>Female</option>
-                <option>Other</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="text-sm text-gray-500">Age</label>
-              <input
-                name="age"
-                value={form.age}
-                onChange={handleChange}
-                className="w-full mt-1 p-3 border rounded-lg"
-              />
-            </div>
+            <input
+              name="username"
+              value={form.username}
+              onChange={handleChange}
+              className="p-3 border rounded-lg"
+            />
+            <input
+              value={form.email}
+              readOnly
+              className="p-3 border rounded-lg bg-gray-100"
+            />
+            <select
+              name="gender"
+              value={form.gender}
+              onChange={handleChange}
+              className="p-3 border rounded-lg"
+            >
+              <option value="">Select</option>
+              <option>Male</option>
+              <option>Female</option>
+              <option>Other</option>
+            </select>
+            <input
+              name="age"
+              value={form.age}
+              onChange={handleChange}
+              className="p-3 border rounded-lg"
+            />
           </div>
 
           <button
             onClick={saveProfile}
-            className="mt-8 w-full bg-sky-600 hover:bg-sky-700 text-white py-3 rounded-xl font-medium"
+            className="mt-8 w-full bg-sky-600 text-white py-3 rounded-xl"
           >
             Save Profile
           </button>
         </div>
 
-        {/* CHANGE PASSWORD CARD */}
+        {/* CHANGE PASSWORD */}
         <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-8">
           <h2 className="text-xl font-semibold text-emerald-700 mb-6">
             Change Password
@@ -215,7 +220,7 @@ export default function Profile() {
                 value={password[key]}
                 onChange={handlePassword}
                 placeholder={label}
-                className="w-full p-3 pr-12 border rounded-lg focus:ring-2 focus:ring-emerald-400 outline-none"
+                className="w-full p-3 pr-12 border rounded-lg"
               />
 
               <span
@@ -231,16 +236,15 @@ export default function Profile() {
 
           <button
             onClick={changePassword}
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-medium"
+            className="w-full bg-emerald-600 text-white py-3 rounded-xl"
           >
             Update Password
           </button>
         </div>
 
-        {/* LOGOUT */}
         <button
           onClick={handleLogout}
-          className="mt-8 w-full border border-red-500 text-red-600 py-3 rounded-xl flex justify-center gap-2 hover:bg-red-50"
+          className="mt-8 w-full border border-red-500 text-red-600 py-3 rounded-xl flex justify-center gap-2"
         >
           <FaSignOutAlt /> Sign Out
         </button>

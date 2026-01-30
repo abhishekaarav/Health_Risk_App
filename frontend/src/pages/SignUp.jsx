@@ -11,6 +11,7 @@ import {
 } from "react-icons/fa";
 
 import img from "../assets/LoginPageImg.png";
+import OAuth from "../components/OAuth"; // 🔥 ADD THIS
 
 export default function SignUp() {
   const [formData, setFormData] = useState({
@@ -42,7 +43,7 @@ export default function SignUp() {
       setPasswordError(
         passwordPattern.test(value)
           ? ""
-          : "Min 8 chars, 1 uppercase, 1 lowercase & 1 number"
+          : "Min 8 chars, 1 uppercase, 1 lowercase & 1 number",
       );
     }
   };
@@ -107,13 +108,9 @@ export default function SignUp() {
             Create Account
           </h2>
 
-          <button className="w-full border py-3 rounded-lg flex justify-center gap-3 mb-6 hover:shadow">
-            <img
-              src="https://www.svgrepo.com/show/475656/google-color.svg"
-              className="w-5"
-            />
-            Continue with Google
-          </button>
+          {/* 🔥 GOOGLE OAUTH BUTTON */}
+          <OAuth />
+
           <div className="flex items-center mb-6">
             <div className="flex-grow h-px bg-gray-300"></div>
             <span className="px-3 text-sm text-gray-500">
@@ -177,9 +174,11 @@ export default function SignUp() {
   );
 }
 
-const Input = ({icon,id,placeholder,value,onChange}) => (
+const Input = ({ icon, id, placeholder, value, onChange }) => (
   <div className="relative">
-    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">{icon}</span>
+    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+      {icon}
+    </span>
     <input
       id={id}
       value={value}
