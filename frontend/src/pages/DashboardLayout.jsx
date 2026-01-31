@@ -10,7 +10,7 @@ export default function DashboardLayout() {
       <Sidebar />
 
       {/* Right side content (changes using Outlet) */}
-      <div className="flex-1 ml-20 md:ml-64 p-4 transition-all">
+      <div className="flex-1 ml-5 md:ml-16 mt-2 p-4 transition-all">
         <Outlet />
       </div>
     </div>

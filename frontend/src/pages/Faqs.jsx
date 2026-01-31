@@ -95,23 +95,10 @@ const Faqs = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <section className="bg-gray-50 py-12">
-        <div className="max-w-4xl mx-auto px-6 text-center transition-all duration-300 hover:scale-[1.01]">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3 leading-tight">
-            PredictiX AI Health FAQs
-          </h1>
-          <p className="text-base text-gray-600 mb-4">
-            Answers to the most common questions about PredictiX AI.
-          </p>
-          <div className="w-16 h-1 bg-green-600 mx-auto rounded-full"></div>
-        </div>
-      </section>
-
-      <main className="max-w-4xl mx-auto px-6 py-12 space-y-12">
+      <main className="max-w-4xl mx-auto px-6 py-16 space-y-12">
         {/* FAQ Section */}
         <section>
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
+          <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-900 mb-6">
             Frequently Asked <span className="text-green-600">Questions</span>
           </h2>
 

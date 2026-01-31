@@ -125,10 +125,12 @@ export default function Profile() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-50 to-emerald-50 flex justify-center items-center p-6">
-      <div className="w-full max-w-4xl bg-white rounded-3xl shadow-xl p-10">
-        <div className="flex flex-col items-center mb-10">
-          <h1 className="text-3xl font-bold text-gray-800 mb-4">My Profile</h1>
+    <div className="min-h-screen bg-gradient-to-br from-sky-50 to-emerald-50 flex justify-center items-center p-4 sm:p-6">
+      <div className="w-full max-w-5xl bg-white rounded-2xl sm:rounded-3xl shadow-xl p-6 sm:p-8 md:p-10">
+        <div className="flex flex-col items-center mb-8 sm:mb-10">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">
+            My Profile
+          </h1>
 
           <input
             hidden
@@ -142,12 +144,12 @@ export default function Profile() {
             <img
               src={`http://localhost:5000${user.profilePhoto}`}
               onClick={() => fileRef.current.click()}
-              className="w-32 h-32 rounded-full border-4 border-indigo-500 object-cover cursor-pointer hover:scale-105 transition"
+              className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-indigo-500 object-cover cursor-pointer hover:scale-105 transition"
             />
           ) : (
             <div
               onClick={() => fileRef.current.click()}
-              className="w-32 h-32 rounded-full border-4 border-indigo-500 flex items-center justify-center text-4xl font-bold text-indigo-600 bg-indigo-100 cursor-pointer hover:scale-105 transition"
+              className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-indigo-500 flex items-center justify-center text-3xl sm:text-4xl font-bold text-indigo-600 bg-indigo-100 cursor-pointer hover:scale-105 transition"
             >
               {user?.email?.charAt(0).toUpperCase()}
             </div>
@@ -158,28 +160,30 @@ export default function Profile() {
         </div>
 
         {/* PERSONAL INFO */}
-        <div className="bg-sky-50 border border-sky-200 rounded-2xl p-8 mb-10">
-          <h2 className="text-xl font-semibold text-sky-700 mb-6">
+        <div className="bg-sky-50 border border-sky-200 rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8 mb-8 sm:mb-10">
+          <h2 className="text-lg sm:text-xl font-semibold text-sky-700 mb-4 sm:mb-6">
             Personal Information
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             <input
               name="username"
               value={form.username}
               onChange={handleChange}
-              className="p-3 border rounded-lg"
+              placeholder="Username"
+              className="p-3 border rounded-lg text-sm sm:text-base"
             />
             <input
               value={form.email}
               readOnly
-              className="p-3 border rounded-lg bg-gray-100"
+              placeholder="Email"
+              className="p-3 border rounded-lg bg-gray-100 text-sm sm:text-base"
             />
             <select
               name="gender"
               value={form.gender}
               onChange={handleChange}
-              className="p-3 border rounded-lg"
+              className="p-3 border rounded-lg text-sm sm:text-base"
             >
               <option value="">Select</option>
               <option>Male</option>
@@ -190,21 +194,22 @@ export default function Profile() {
               name="age"
               value={form.age}
               onChange={handleChange}
-              className="p-3 border rounded-lg"
+              placeholder="Age"
+              className="p-3 border rounded-lg text-sm sm:text-base"
             />
           </div>
 
           <button
             onClick={saveProfile}
-            className="mt-8 w-full bg-sky-600 text-white py-3 rounded-xl"
+            className="mt-6 sm:mt-8 w-full bg-sky-600 text-white py-3 rounded-xl text-sm sm:text-base font-medium hover:bg-sky-700 transition"
           >
             Save Profile
           </button>
         </div>
 
         {/* CHANGE PASSWORD */}
-        <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-8">
-          <h2 className="text-xl font-semibold text-emerald-700 mb-6">
+        <div className="bg-emerald-50 border border-emerald-200 rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8">
+          <h2 className="text-lg sm:text-xl font-semibold text-emerald-700 mb-4 sm:mb-6">
             Change Password
           </h2>
 
@@ -213,21 +218,21 @@ export default function Profile() {
             { key: "newpass", label: "New Password" },
             { key: "confirm", label: "Confirm Password" },
           ].map(({ key, label }) => (
-            <div key={key} className="relative mb-5">
+            <div key={key} className="relative mb-4 sm:mb-5">
               <input
                 type={showPass[key] ? "text" : "password"}
                 name={key}
                 value={password[key]}
                 onChange={handlePassword}
                 placeholder={label}
-                className="w-full p-3 pr-12 border rounded-lg"
+                className="w-full p-3 pr-12 border rounded-lg text-sm sm:text-base"
               />
 
               <span
                 onClick={() =>
                   setShowPass({ ...showPass, [key]: !showPass[key] })
                 }
-                className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
+                className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500 text-lg"
               >
                 {showPass[key] ? <FaEyeSlash /> : <FaEye />}
               </span>
@@ -236,7 +241,7 @@ export default function Profile() {
 
           <button
             onClick={changePassword}
-            className="w-full bg-emerald-600 text-white py-3 rounded-xl"
+            className="w-full bg-emerald-600 text-white py-3 rounded-xl text-sm sm:text-base font-medium hover:bg-emerald-700 transition"
           >
             Update Password
           </button>
@@ -244,7 +249,7 @@ export default function Profile() {
 
         <button
           onClick={handleLogout}
-          className="mt-8 w-full border border-red-500 text-red-600 py-3 rounded-xl flex justify-center gap-2"
+          className="mt-6 sm:mt-8 w-full border-2 border-red-500 text-red-600 py-3 rounded-xl flex justify-center items-center gap-2 text-sm sm:text-base font-medium hover:bg-red-50 transition"
         >
           <FaSignOutAlt /> Sign Out
         </button>

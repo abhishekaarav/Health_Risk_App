@@ -120,7 +120,7 @@ export default function Footer() {
 
             <div className="flex items-center gap-3 text-gray-400 mb-2">
               <FaPhoneAlt className="text-blue-400" />
-              <span>+91 98765 43210</span>
+              <span>+91 6396803459</span>
             </div>
 
             <div className="flex items-center gap-3 text-gray-400 mb-2">
@@ -130,7 +130,7 @@ export default function Footer() {
 
             <div className="flex items-center gap-3 text-gray-400">
               <FaMapMarkerAlt className="text-blue-400" />
-              <span>Patna, Bihar, India</span>
+              <span>India</span>
             </div>
           </div>
         </div>
