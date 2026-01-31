@@ -66,19 +66,22 @@ export default function Sidebar() {
       {/* SIDEBAR */}
       <aside
         className={`
-          bg-gradient-to-b from-gray-50 to-gray-100
-          h-screen fixed left-0 z-50 md:z-40
-          transition-all duration-300 ease-in-out
-          shadow-2xl md:shadow-xl
-          border-r border-gray-200
-          
-          /* Mobile: Full screen overlay */
-          top-0 w-full max-w-[280px] sm:max-w-xs
-          ${mobileOpen ? "translate-x-0" : "-translate-x-full"}
-          
-          /* Desktop: Always visible, positioned below header */
-          md:translate-x-0 md:top-[80px] md:w-64
-        `}
+    bg-gradient-to-b from-gray-50 to-gray-100
+    h-[50vh] md:h-screen
+    fixed left-0 z-50 md:z-40
+    transition-all duration-300 ease-in-out
+    shadow-2xl md:shadow-xl
+    border-r border-gray-200
+    
+    /* Mobile: start exactly below navbar + rounded corners */
+    top-[80px] rounded-tr-2xl rounded-br-2xl
+    w-[70%] max-w-[280px]
+
+    ${mobileOpen ? "translate-x-0" : "-translate-x-full"}
+    
+    /* Desktop: unchanged */
+    md:translate-x-0 md:top-[80px] md:w-64 md:rounded-none
+  `}
         aria-label="Main navigation"
       >
         {/* Decorative Elements */}
@@ -86,7 +89,7 @@ export default function Sidebar() {
         <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-gray-200/30 to-transparent pointer-events-none" />
 
         {/* SIDEBAR CONTENT CONTAINER */}
-        <div className="relative h-full flex flex-col p-4 sm:p-6 mt-18 sm:mt-8 md:mt-8">
+        <div className="relative h-full flex flex-col p-4 sm:p-6 mt-0 md:mt-4">
           {/* MOBILE CLOSE BUTTON */}
           <button
             className="md:hidden self-end mb-4 text-gray-700 hover:bg-gray-200 p-2 rounded-lg transition-all duration-300"

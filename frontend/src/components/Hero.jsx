@@ -24,7 +24,7 @@ function Hero() {
   const sliderImages = [img1, img2, img3, img4, img5];
 
   return (
-    <>
+    <div className="overflow-x-hidden">
       {/* ================= TOP IMAGE SLIDER ================= */}
       <div className="w-screen overflow-hidden">
         <Swiper
@@ -52,11 +52,11 @@ function Hero() {
       </div>
 
       {/* =============== HERO SECTION (PERFECT LEFT–RIGHT JUSTIFY BETWEEN) ================= */}
-      <section className="w-full bg-[#f5f5f7] py-14">
+      <section className="w-full bg-[#f5f5f7] py-5">
         <div className="max-w-7xl mx-auto px-0 md:px-4 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-10">
             {/* LEFT SIDE TEXT */}
-            <div className="w-full md:w-1/2 md:pl-2">
+            <div className="w-full md:w-1/2 md:pl-2 max-sm:pl-4">
               <p className="text-sm md:text-base font-semibold tracking-wide text-blue-600 mb-2 uppercase">
                 Bharat&apos;s Trusted & Affordable
               </p>
@@ -151,7 +151,7 @@ function Hero() {
       </div>
       <HospitalLocator />
       <Footer />
-    </>
+    </div>
   );
 }
 

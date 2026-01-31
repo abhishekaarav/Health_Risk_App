@@ -56,10 +56,8 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="flex bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 min-h-screen">
-      <Sidebar />
-
-      <div className="flex-1 p-3 sm:p-4 md:p-6 lg:p-8 transition-all mt-16 md:mt-0">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      <div className="p-3 sm:p-4 md:p-6 lg:p-8 transition-all">
         {/* Animated Header */}
         <div
           className={`flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-6 transform transition-all duration-700 ${
