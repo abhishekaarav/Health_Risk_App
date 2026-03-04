@@ -3,11 +3,9 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
 export default function PrivateRoute() {
-  const { user } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext);
 
-  if (!user) {
-    return <Navigate to="/sign-in" replace />;
-  }
+  if (loading) return null; // ya loader dikha sakte ho
 
-  return <Outlet />;
+  return user ? <Outlet /> : <Navigate to="/sign-in" replace />;
 }

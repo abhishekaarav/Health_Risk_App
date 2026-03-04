@@ -6,26 +6,36 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔁 Refresh ke baad bhi login rahe
+  // 🔁 Restore user after refresh
   useEffect(() => {
-    try {
-      const storedUser = localStorage.getItem("currentUser");
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
+    const restoreUser = () => {
+      try {
+        const storedUser = localStorage.getItem("currentUser");
+
+        if (storedUser) {
+          const parsedUser = JSON.parse(storedUser);
+          setUser(parsedUser);
+        }
+      } catch (error) {
+        console.error("Invalid user data in localStorage");
+        localStorage.removeItem("currentUser");
+        setUser(null);
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.error("Invalid user in localStorage");
-      localStorage.removeItem("currentUser");
-      setUser(null);
-    } finally {
-      setLoading(false);
-    }
+    };
+
+    restoreUser();
   }, []);
 
   // ✅ Login
   const login = (userData) => {
-    localStorage.setItem("currentUser", JSON.stringify(userData));
-    setUser(userData);
+    try {
+      localStorage.setItem("currentUser", JSON.stringify(userData));
+      setUser(userData);
+    } catch (error) {
+      console.error("Error saving user to localStorage");
+    }
   };
 
   // ❌ Logout
@@ -35,7 +45,14 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        login,
+        logout,
+        loading,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

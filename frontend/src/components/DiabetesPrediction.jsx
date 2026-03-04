@@ -18,9 +18,43 @@ export default function DiabetesPrediction() {
   const [form, setForm] = useState(initialState);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
+  const [fieldErrors, setFieldErrors] = useState({});
+
+  /* REAL WORLD MEDICAL RANGES */
+  const ranges = {
+    Pregnancies: [0, 20],
+    Glucose: [50, 300],
+    DiastolicBP: [40, 130],
+    SkinThickness: [0, 100],
+    Insulin: [0, 900],
+    BMI: [10, 70],
+    DiabetesPedigreeFunction: [0, 3],
+    Age: [1, 120],
+  };
+
+  const validateFields = () => {
+    let errors = {};
+
+    Object.keys(ranges).forEach((key) => {
+      const value = Number(form[key]);
+
+      if (value < 0) {
+        errors[key] = "Value cannot be negative";
+      } else if (value < ranges[key][0] || value > ranges[key][1]) {
+        errors[key] = `Value must be between ${ranges[key][0]} and ${ranges[key][1]}`;
+      }
+    });
+
+    setFieldErrors(errors);
+
+    return Object.keys(errors).length === 0;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateFields()) return;
+
     setLoading(true);
     setResult(null);
 
@@ -53,7 +87,10 @@ export default function DiabetesPrediction() {
             setForm={setForm}
             onSubmit={handleSubmit}
             loading={loading}
-          />
+            fieldErrors={fieldErrors}
+            ranges={ranges}
+            setFieldErrors={setFieldErrors}
+           />
         ) : (
           <DiabetesResult result={result} onBack={() => setResult(null)} />
         )}

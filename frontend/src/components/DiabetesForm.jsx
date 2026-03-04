@@ -1,4 +1,12 @@
-export default function DiabetesForm({ form, setForm, onSubmit, loading }) {
+export default function DiabetesForm({
+  form,
+  setForm,
+  onSubmit,
+  loading,
+  fieldErrors,
+  ranges,
+  setFieldErrors,
+}) {
   const fields = [
     { name: "Pregnancies", unit: "(count)" },
     { name: "Glucose", unit: "(mg/dL)" },
@@ -9,6 +17,40 @@ export default function DiabetesForm({ form, setForm, onSubmit, loading }) {
     { name: "DiabetesPedigreeFunction", unit: "(value)" },
     { name: "Age", unit: "(years)" },
   ];
+
+  const validateField = (name, value) => {
+    let error = "";
+
+    if (value < 0) {
+      error = "Value cannot be negative";
+    } else if (
+      value < ranges[name][0] ||
+      value > ranges[name][1]
+    ) {
+      error = `Value must be between ${ranges[name][0]} and ${ranges[name][1]}`;
+    }
+
+    setFieldErrors((prev) => ({
+      ...prev,
+      [name]: error,
+    }));
+  };
+
+  const handleChange = (name, value) => {
+    if (value < 0) return;
+
+    setForm({
+      ...form,
+      [name]: value,
+    });
+
+    validateField(name, Number(value));
+  };
+
+  const getBorder = (name) =>
+    fieldErrors?.[name]
+      ? "border-red-500 focus:ring-red-500 bg-red-50"
+      : "border-gray-300 focus:ring-indigo-500";
 
   return (
     <div className="bg-white/70 backdrop-blur-xl p-8 rounded-2xl shadow-xl border border-white/50 transition hover:shadow-2xl hover:-translate-y-1 duration-300">
@@ -21,21 +63,47 @@ export default function DiabetesForm({ form, setForm, onSubmit, loading }) {
             <label className="text-gray-800 font-semibold text-lg block mb-1">
               {field.name} <span className="text-red-600">*</span>
               <span className="text-gray-500 ml-1">{field.unit}</span>
+
+              {ranges[field.name] && (
+                <span className="text-gray-500 text-sm ml-2">
+                  ({ranges[field.name][0]} - {ranges[field.name][1]})
+                </span>
+              )}
             </label>
 
+            {/* NUMBER INPUT */}
             <input
               type="number"
-              name={field.name}
               value={form[field.name]}
+              min={ranges[field.name][0]}
+              max={ranges[field.name][1]}
               onChange={(e) =>
-                setForm({ ...form, [e.target.name]: e.target.value })
+                handleChange(field.name, e.target.value)
               }
+              className={`w-full border p-3 rounded-lg mb-2 transition ${getBorder(
+                field.name
+              )}`}
+              placeholder={`Enter ${field.name}`}
               required
-              className="w-full border border-gray-300 p-3 rounded-lg bg-white 
-                focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 
-                transition duration-200 hover:border-indigo-400 hover:bg-indigo-50"
-              placeholder={`Enter ${field.name} ${field.unit}`}
             />
+
+            {/* SLIDER */}
+            <input
+              type="range"
+              min={ranges[field.name][0]}
+              max={ranges[field.name][1]}
+              value={form[field.name] || ranges[field.name][0]}
+              onChange={(e) =>
+                handleChange(field.name, e.target.value)
+              }
+              className="w-full accent-black cursor-pointer h-2 rounded-lg"
+            />
+
+            {fieldErrors?.[field.name] && (
+              <p className="text-red-500 text-sm mt-1">
+                {fieldErrors[field.name]}
+              </p>
+            )}
           </div>
         ))}
 
