@@ -45,7 +45,7 @@ export default function SignIn() {
 
       login(data.user);
       setLoading(false);
-      navigate("/");
+      navigate("/dashboard");
     } catch (err) {
       setLoading(false);
       setError(err.response?.data?.message || "Something went wrong");

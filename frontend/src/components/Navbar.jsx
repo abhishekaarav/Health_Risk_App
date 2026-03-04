@@ -18,7 +18,7 @@ function Navbar() {
     "text-indigo-600 font-semibold after:absolute after:left-0 after:-bottom-1 after:w-full after:h-[2px] after:bg-gradient-to-r after:from-indigo-600 after:to-purple-600";
 
   return (
-    <nav className="fixed top-0 left-0 z-50 w-full bg-gradient-to-r from-indigo-200 via-purple-80 to-pink-200 backdrop-blur-sm shadow-lg border-b border-white/20">
+    <nav className="fixed top-0 left-0 z-50 w-full bg-white/90 backdrop-blur-md shadow-lg border-b border-gray-200">
       <div className="pl-16 pr-4 sm:px-8 lg:px-14 flex items-center justify-between relative h-22">
         <div className="shrink-0 relative z-10 scale-100">
           <img
@@ -60,7 +60,7 @@ function Navbar() {
               `${navItem} text-lg xl:text-[22px] font-bold ${isActive ? activeNav : ""}`
             }
           >
-            Predictors
+            Dashboard
           </NavLink>
           <NavLink
             to="/bmi-calculator"

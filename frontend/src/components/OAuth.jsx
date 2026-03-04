@@ -30,7 +30,7 @@ export default function OAuth() {
       // 🔥 THIS FIXES PROFILE + IMAGE
       login(res.data.user);
 
-      navigate("/");
+      navigate("/dashboard");
     } catch (error) {
       console.log("could not sign in with google", error);
     }

@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
+import { AuthContext } from "../context/AuthContext";
 import {
   LayoutDashboard,
   BarChart3,
@@ -10,12 +11,14 @@ import {
   LogOut,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function Sidebar() {
+  const { logout } = useContext(AuthContext);
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
-  // Close mobile menu when route changes
   useEffect(() => {
     setMobileOpen(false);
   }, [location.pathname]);
@@ -42,6 +45,11 @@ export default function Sidebar() {
     window.addEventListener("keydown", handleEscape);
     return () => window.removeEventListener("keydown", handleEscape);
   }, [mobileOpen]);
+    
+  const handleLogout = () => {
+    logout();
+    navigate("/sign-in");
+  };
 
   return (
     <>
@@ -135,7 +143,7 @@ export default function Sidebar() {
             <SidebarItem
               to="/metrics"
               icon={<BarChart3 />}
-              text="Metrics"
+              text="Predictors"
               path={location.pathname}
             />
 
@@ -147,11 +155,11 @@ export default function Sidebar() {
             />
 
             <SidebarItem
-              to="/sign-in"
+              onClick={handleLogout}
               icon={<LogOut />}
               text="Sign Out"
               path={location.pathname}
-              isSignOut={true}
+              // isSignOut={true}
             />
           </nav>
 
@@ -172,80 +180,38 @@ export default function Sidebar() {
   );
 }
 
-function SidebarItem({ to, icon, text, path, isSignOut }) {
+function SidebarItem({ to, icon, text, path, isSignOut, onClick }) {
   const active = path === to;
 
+  const classes = `
+    relative flex items-center gap-3 sm:gap-4 
+    px-3 sm:px-4 py-3 sm:py-3.5 
+    rounded-xl transition-all duration-300
+    group overflow-hidden
+    ${
+      isSignOut
+        ? "text-red-600 hover:bg-red-50 hover:translate-x-1 border border-transparent hover:border-red-200"
+        : active
+        ? "bg-gradient-to-r from-zinc-500 to-zinc-600 text-white shadow-lg shadow-indigo-200"
+        : "text-gray-700 hover:bg-gray-200 hover:translate-x-1"
+    }
+  `;
+
+  // SIGN OUT BUTTON
+  if (onClick) {
+    return (
+      <button onClick={onClick} className={classes}>
+        <span className="w-5 h-5 sm:w-6 sm:h-6">{icon}</span>
+        <span className="text-sm sm:text-base font-medium">{text}</span>
+      </button>
+    );
+  }
+
+  // NORMAL LINK
   return (
-    <Link
-      to={to}
-      className={`
-        relative flex items-center gap-3 sm:gap-4 
-        px-3 sm:px-4 py-3 sm:py-3.5 
-        rounded-xl transition-all duration-300
-        group overflow-hidden
-        ${
-          isSignOut
-            ? "text-red-600 hover:bg-red-50 hover:translate-x-1 border border-transparent hover:border-red-200"
-            : active
-              ? "bg-gradient-to-r from-zinc-500 to-zinc-600 text-white shadow-lg shadow-indigo-200"
-              : "text-gray-700 hover:bg-gray-200 hover:translate-x-1"
-        }
-      `}
-      aria-current={active && !isSignOut ? "page" : undefined}
-    >
-      {/* Active Indicator - Left Border */}
-      {active && !isSignOut && (
-        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 sm:h-8 bg-white rounded-r-full shadow-lg" />
-      )}
-
-      {/* Hover Gradient Background for Regular Items */}
-      {!active && !isSignOut && (
-        <div className="absolute inset-0 bg-gradient-to-r from-gray-100 via-gray-150 to-gray-100 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-      )}
-
-      {/* SignOut Hover Background */}
-      {isSignOut && (
-        <div className="absolute inset-0 bg-gradient-to-r from-red-50 via-red-100 to-red-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-      )}
-
-      {/* Icon */}
-      <span
-        className={`
-          relative z-10 transition-all duration-300 flex-shrink-0
-          w-5 h-5 sm:w-6 sm:h-6
-          ${
-            isSignOut
-              ? "text-red-600 group-hover:text-red-700 group-hover:scale-110"
-              : active
-                ? "text-white"
-                : "text-gray-600 group-hover:text-gray-900 group-hover:scale-110"
-          }
-        `}
-      >
-        {icon}
-      </span>
-
-      {/* Text */}
-      <span
-        className={`
-          relative z-10 transition-all duration-300 truncate
-          text-sm sm:text-base
-          ${
-            isSignOut
-              ? "font-semibold text-red-600 group-hover:text-red-700 group-hover:translate-x-0.5"
-              : active
-                ? "font-bold text-white"
-                : "font-medium group-hover:translate-x-0.5"
-          }
-        `}
-      >
-        {text}
-      </span>
-
-      {/* Active Pill Background Animation */}
-      {active && !isSignOut && (
-        <div className="absolute inset-0 bg-gradient-to-r from-zinc-600 via-zinc-500 to-zinc-600 opacity-90" />
-      )}
+    <Link to={to} className={classes}>
+      <span className="w-5 h-5 sm:w-6 sm:h-6">{icon}</span>
+      <span className="text-sm sm:text-base font-medium">{text}</span>
     </Link>
   );
 }

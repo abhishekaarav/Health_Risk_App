@@ -2,6 +2,7 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
+import PrivateRoute from "./components/PrivateRoute";
 
 // PUBLIC PAGES
 import Home from "./pages/Home";
@@ -9,8 +10,10 @@ import About from "./pages/About";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import NotFound from "./pages/NotFound";
+import BMICalculator from "./pages/BMICalculator";
+import Faqs from "./pages/Faqs";
 
-// DASHBOARD LAYOUT (with sidebar)
+// DASHBOARD LAYOUT
 import DashboardLayout from "./pages/DashboardLayout";
 
 // Dashboard internal pages
@@ -18,15 +21,13 @@ import Dashboard from "./components/Dashboard";
 import Predictors from "./pages/Predictors";
 import Profile from "./pages/Profile";
 import Metrics from "./pages/Metrics";
+import History from "./pages/History";
 
-// Prediction Components (NO SIDEBAR)
+// Prediction Components
 import HeartPrediction from "./components/HeartPrediction";
 import DiabetesPrediction from "./components/DiabetesPrediction";
 import HeartResult from "./components/HeartResult";
 import DiabetesResult from "./components/DiabetesResult";
-import BMICalculator from "./pages/BMICalculator";
-import Faqs from "./pages/Faqs";
-import History from "./pages/History";
 
 export default function App() {
   return (
@@ -42,20 +43,25 @@ export default function App() {
         <Route path="/bmi-calculator" element={<BMICalculator />} />
         <Route path="/faqs" element={<Faqs />} />
 
-        {/* SIDEBAR PAGES */}
-        <Route element={<DashboardLayout />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/predictions" element={<Predictors />} />
-          <Route path="/metrics" element={<Metrics />} />
-          <Route path="/history" element={<History />} />
-        </Route>
+        {/* PRIVATE ROUTES */}
+        <Route element={<PrivateRoute />}>
 
-        {/* WITHOUT SIDEBAR */}
-        <Route path="/heart-predict" element={<HeartPrediction />} />
-        <Route path="/diabetes-predict" element={<DiabetesPrediction />} />
-        <Route path="/heart-result" element={<HeartResult />} />
-        <Route path="/diabetes-result" element={<DiabetesResult />} />
+          {/* DASHBOARD WITH SIDEBAR */}
+          <Route element={<DashboardLayout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/predictions" element={<Predictors />} />
+            <Route path="/metrics" element={<Metrics />} />
+            <Route path="/history" element={<History />} />
+          </Route>
+
+          {/* PREDICTION PAGES WITHOUT SIDEBAR */}
+          <Route path="/heart-predict" element={<HeartPrediction />} />
+          <Route path="/diabetes-predict" element={<DiabetesPrediction />} />
+          <Route path="/heart-result" element={<HeartResult />} />
+          <Route path="/diabetes-result" element={<DiabetesResult />} />
+
+        </Route>
 
         {/* 404 */}
         <Route path="*" element={<NotFound />} />
