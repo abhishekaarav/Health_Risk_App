@@ -46,7 +46,7 @@ export const diabetesPrediction = async (req, res) => {
 
     // *** FIXED — CORRECT URL + CORRECT RESPONSE FORMAT ***
     const flaskRes = await axios.post(
-      "http://127.0.0.1:5000/predict/diabetes",
+      "http://127.0.0.1:8000/predict/diabetes",
       flaskInput
     );
 

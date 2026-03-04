@@ -104,7 +104,7 @@ export const heartPrediction = async (req, res) => {
     let flaskRes;
     try {
       flaskRes = await axios.post(
-        "http://127.0.0.1:5000/predict/heart",
+        "http://127.0.0.1:8000/predict/heart",
         flaskInput,
         { timeout: 15000 }
       );
