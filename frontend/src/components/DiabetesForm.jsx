@@ -77,6 +77,7 @@ export default function DiabetesForm({
               value={form[field.name]}
               min={ranges[field.name][0]}
               max={ranges[field.name][1]}
+              step={field.name === "DiabetesPedigreeFunction" ? "0.01" : "1"}
               onChange={(e) =>
                 handleChange(field.name, e.target.value)
               }
@@ -88,17 +89,17 @@ export default function DiabetesForm({
             />
 
             {/* SLIDER */}
-            <input
-              type="range"
-              min={ranges[field.name][0]}
-              max={ranges[field.name][1]}
-              value={form[field.name] || ranges[field.name][0]}
-              onChange={(e) =>
-                handleChange(field.name, e.target.value)
-              }
-              className="w-full accent-black cursor-pointer h-2 rounded-lg"
+           <input
+            type="range"
+            min={ranges[field.name][0]}
+            max={ranges[field.name][1]}
+            step={field.name === "DiabetesPedigreeFunction" ? "0.01" : "1"}
+            value={form[field.name] || ranges[field.name][0]}
+            onChange={(e) =>
+              handleChange(field.name, e.target.value)
+            }
+            className="w-full accent-black cursor-pointer h-2 rounded-lg"
             />
-
             {fieldErrors?.[field.name] && (
               <p className="text-red-500 text-sm mt-1">
                 {fieldErrors[field.name]}

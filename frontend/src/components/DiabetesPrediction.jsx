@@ -28,7 +28,7 @@ export default function DiabetesPrediction() {
     SkinThickness: [0, 100],
     Insulin: [0, 900],
     BMI: [10, 70],
-    DiabetesPedigreeFunction: [0, 3],
+    DiabetesPedigreeFunction: [0, 1],   
     Age: [1, 120],
   };
 
