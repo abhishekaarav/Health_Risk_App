@@ -157,6 +157,7 @@ export default function HeartPrediction() {
         >
           {[
             { label: "Age", name: "Age" },
+            { label: "Sex", name: "Sex", type: "selectSex" },
             { label: "Cholesterol", name: "Cholesterol" },
             { label: "Systolic Blood Pressure", name: "Systolic_BP" },
             { label: "Diastolic Blood Pressure", name: "Diastolic_BP" },
@@ -177,34 +178,50 @@ export default function HeartPrediction() {
                 )}
               </label>
 
-              {/* NUMBER INPUT */}
-              <input
-                type="number"
-                value={form[field.name]}
-                min={ranges[field.name][0]}
-                max={ranges[field.name][1]}
-                onChange={(e) =>
-                  handleInputChange(field.name, e.target.value)
-                }
-                className={`w-full border p-2 rounded-lg mb-2 transition ${
-                  fieldErrors?.[field.name]
-                    ? "border-red-500 focus:ring-red-500 bg-red-50"
-                    : "border-gray-300 focus:ring-indigo-500"
-                }`}
-                required
-              />
+              {field.type === "selectSex" ? (
+                <select
+                  name="Sex"
+                  value={form.Sex}
+                  onChange={handleChange}
+                  className="w-full border p-2 rounded-lg mb-2 focus:ring-indigo-500"
+                  required
+                >
+                  <option value="">Select Gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
+              ) : (
+                <>
+                  <input
+                    type="number"
+                    value={form[field.name]}
+                    min={ranges[field.name]?.[0]}
+                    max={ranges[field.name]?.[1]}
+                    onChange={(e) =>
+                      handleInputChange(field.name, e.target.value)
+                    }
+                    className={`w-full border p-2 rounded-lg mb-2 transition ${
+                      fieldErrors?.[field.name]
+                        ? "border-red-500 focus:ring-red-500 bg-red-50"
+                        : "border-gray-300 focus:ring-indigo-500"
+                    }`}
+                    required
+                  />
 
-              {/* SLIDER */}
-              <input
-                type="range"
-                min={ranges[field.name][0]}
-                max={ranges[field.name][1]}
-                value={form[field.name] || ranges[field.name][0]}
-                onChange={(e) =>
-                  handleInputChange(field.name, e.target.value)
-                }
-                className="w-full accent-black cursor-pointer"
-              />
+                  {ranges[field.name] && (
+                    <input
+                      type="range"
+                      min={ranges[field.name][0]}
+                      max={ranges[field.name][1]}
+                      value={form[field.name] || ranges[field.name][0]}
+                      onChange={(e) =>
+                        handleInputChange(field.name, e.target.value)
+                      }
+                      className="w-full accent-black cursor-pointer"
+                    />
+                  )}
+                </>
+              )}
 
               {fieldErrors?.[field.name] && (
                 <p className="text-red-500 text-sm mt-1">
@@ -214,7 +231,37 @@ export default function HeartPrediction() {
             </div>
           ))}
 
-          {/* ERROR */}
+          <div className="md:col-span-2 mt-4">
+            <h2 className="text-xl font-semibold text-gray-700 mb-3">
+              Medical & Lifestyle Indicators
+            </h2>
+          </div>
+
+          {[
+            { label: "Diabetes", name: "Diabets" },
+            { label: "Family History of Heart Disease", name: "FamilyHistory" },
+            { label: "Smoking", name: "Smoking" },
+            { label: "Obesity", name: "Obesity" },
+            { label: "Alcohol Consumption", name: "AlcoholConsumption" },
+            { label: "Previous Health Problems", name: "PreviousHealthProblem" },
+            { label: "Medication Use", name: "MedicationUse" },
+            { label: "Meditation Habit", name: "Meditation" },
+          ].map((field, index) => (
+            <label
+              key={index}
+              className="flex items-center gap-3 bg-gray-50 p-3 rounded-lg border cursor-pointer hover:bg-gray-100"
+            >
+              <input
+                type="checkbox"
+                name={field.name}
+                checked={form[field.name]}
+                onChange={handleChange}
+                className="w-5 h-5"
+              />
+              <span className="text-gray-700">{field.label}</span>
+            </label>
+          ))}
+
           {apiError && (
             <div className="md:col-span-2">
               <p className="text-red-600 text-sm bg-red-50 border border-red-200 rounded-lg px-3 py-2">
@@ -223,7 +270,6 @@ export default function HeartPrediction() {
             </div>
           )}
 
-          {/* BUTTONS */}
           <div className="md:col-span-2 mt-6 flex flex-col md:flex-row gap-3">
             <button
               type="submit"

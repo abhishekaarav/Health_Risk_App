@@ -1,0 +1,45 @@
+services:
+  # ── 1. Flask Microservice ──────────────────────────
+  - type: web
+    name: health-risk-flask
+    runtime: python
+    rootDir: Flask_Microservice
+    buildCommand: pip install -r requirements.txt
+    startCommand: python main.py
+    envVars:
+      - key: PORT
+        value: 10000
+
+  # ── 2. Node.js Backend ─────────────────────────────
+  - type: web
+    name: health-risk-backend
+    runtime: node
+    rootDir: Health_Risk_App/backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: MONGO_URI
+        value: mongodb+srv://health_risk_app:health_risk_app@cluster0.2fgorwv.mongodb.net
+        sync: false          # Render dashboard mein manually bharenge
+      - key: JWT_SECRET
+        value: your_jwt_secret_key
+        sync: false
+      - key: FLASK_URL
+        value: https://health-risk-flask.onrender.com
+
+  # ── 3. React Frontend ──────────────────────────────
+  - type: web
+    name: health-risk-frontend
+    runtime: node
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    startCommand: npx serve -s dist -l 10000
+    envVars:
+      - key: VITE_BACKEND_URL
+        value: https://health-risk-backend.onrender.com
+      - key: VITE_FLASK_URL
+        value: https://health-risk-flask.onrender.com
+      - key: VITE_FIREBASE_API_KEY
+        sync: false
